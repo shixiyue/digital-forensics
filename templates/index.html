@@ -5,7 +5,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <link rel="icon" type="image/png" sizes="32x32" href="https://www.tech.cornell.edu/wp-content/themes/cornell-tech/assets/favicons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32"
+    href="https://www.tech.cornell.edu/wp-content/themes/cornell-tech/assets/favicons/favicon-32x32.png">
   <title>Digital Forensics</title>
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
@@ -15,23 +16,52 @@
   <!-- Your custom styles (optional) -->
   <link href="/static/css/style.min.css" rel="stylesheet">
   <style>
+    .map-container {
+      overflow: hidden;
+      padding-bottom: 56.25%;
+      position: relative;
+      height: 0;
+    }
 
-    .map-container{
-overflow:hidden;
-padding-bottom:56.25%;
-position:relative;
-height:0;
-}
-.map-container iframe{
-left:0;
-top:0;
-height:100%;
-width:100%;
-position:absolute;
-}
+    .map-container iframe {
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 100%;
+      position: absolute;
+    }
   </style>
-<style type="text/css">/* Chart.js */
-@-webkit-keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}@keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}.chartjs-render-monitor{-webkit-animation:chartjs-render-animation 0.001s;animation:chartjs-render-animation 0.001s;}</style><script type="text/javascript" charset="UTF-8" src="https://maps.google.com/maps-api-v3/api/js/40/3/common.js"></script><script type="text/javascript" charset="UTF-8" src="https://maps.google.com/maps-api-v3/api/js/40/3/util.js"></script></head>
+  <style type="text/css">
+    /* Chart.js */
+    @-webkit-keyframes chartjs-render-animation {
+      from {
+        opacity: 0.99
+      }
+
+      to {
+        opacity: 1
+      }
+    }
+
+    @keyframes chartjs-render-animation {
+      from {
+        opacity: 0.99
+      }
+
+      to {
+        opacity: 1
+      }
+    }
+
+    .chartjs-render-monitor {
+      -webkit-animation: chartjs-render-animation 0.001s;
+      animation: chartjs-render-animation 0.001s;
+    }
+  </style>
+  <script type="text/javascript" charset="UTF-8"
+    src="https://maps.google.com/maps-api-v3/api/js/40/3/common.js"></script>
+  <script type="text/javascript" charset="UTF-8" src="https://maps.google.com/maps-api-v3/api/js/40/3/util.js"></script>
+</head>
 
 <body class="grey lighten-3" style="">
 
@@ -48,14 +78,15 @@ position:absolute;
         </a>
 
         <!-- Collapse -->
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
 
         <!-- Links -->
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-          <!-- Left -->
+          <ul class="navbar-nav mr-auto">
+            <!-- Left -->
             <li class="nav-item active">
               <a class="nav-link waves-effect" href="#">Home
                 <span class="sr-only">(current)</span>
@@ -64,9 +95,9 @@ position:absolute;
             <li class="nav-item">
               <a class="nav-link waves-effect" href="{{ url_for('about') }}" target="_blank">Digital Forensics Team</a>
             </li>
-            </ul>
-            
-            
+          </ul>
+
+
           </ul>
 
           <!-- Right -->
@@ -98,7 +129,8 @@ position:absolute;
     <div class="sidebar-fixed position-fixed">
 
       <a class="logo-wrapper waves-effect">
-        <img src="https://weill.cornell.edu/sites/default/files/wcm_2line_cobrand_rgb.png" class="img-fluid" alt="Weill Cornell Medicine">
+        <img src="https://weill.cornell.edu/sites/default/files/wcm_2line_cobrand_rgb.png" class="img-fluid"
+          alt="Weill Cornell Medicine">
       </a>
 
       <div class="list-group list-group-flush">
@@ -141,41 +173,42 @@ position:absolute;
 
         <!--Grid column-->
         <script>
-        function call_simple_script() {
-          document.getElementById("trytry").innerHTML = "Clicked";
-        }  
+          function call_simple_script() {
+            document.getElementById("trytry").innerHTML = "Clicked";
+          }  
         </script>
         <div class="col-md-9 mb-4">
-    
-        <form id="upload-form" action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
-        <input name="file" type="file" accept="image/*">
-        <input type="submit" value="Submit Image" class="btn btn-default" id="upload-button">
-      </form>
-      {% if filename %}
-  <h1><img src="{{filename}}"></h1>
-  {% endif %}
+
+          <form id="upload-form" action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+            <input name="file" type="file" accept="image/*">
+            <input type="submit" value="Submit Image" class="btn btn-default" id="upload-button">
+          </form>
+          {% if filename %}
+          <h1><img src="{{filename}}"></h1>
+          {% endif %}
         </div>
 
       </div>
 
-      </div>
-     
+    </div>
+
     </div>
   </main>
   <!--Main layout-->
 
   <!--Footer-->
-  <footer class="page-footer text-center font-small primary-color-dark darken-2 mt-4 wow fadeIn" style="visibility: visible; animation-name: fadeIn;">
+  <footer class="page-footer text-center font-small primary-color-dark darken-2 mt-4 wow fadeIn"
+    style="visibility: visible; animation-name: fadeIn;">
 
     <!--Call to action-->
-    
+
     <!--/.Call to action-->
 
     <hr class="my-4">
 
     <!-- Social icons -->
     <div class="pb-4">
-      
+
     </div>
     <!-- Social icons -->
 
@@ -191,4 +224,5 @@ position:absolute;
 
 
 </body>
+
 </html>
