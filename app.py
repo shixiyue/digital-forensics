@@ -5,6 +5,8 @@ import os
 import script
 from forms import LoginForm, SignupForm
 
+from github_webhook import Webhook
+
 import uuid
 
 # creates a Flask application, named app
@@ -12,6 +14,8 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24)
 app.config['UPLOAD_FOLDER'] = "static/upload/"
 app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
+
+webhook = Webhook(app, secret=os.environ['GITHUB_SECRET']) # Defines '/postreceive' endpoint
 
 # a route where we will display a welcome message via an HTML template
 @app.route("/")
@@ -78,7 +82,11 @@ def upload():
 
     return render_template('index.html')
 
+@webhook.hook()        # Defines a handler for the 'push' event
+def on_push(data):
+    print("Got push with: {0}".format(data))
+
 # run the application
 if __name__ == "__main__":
-    #app.run(debug=True)
+    app.run(debug=True)
     app.run(host='0.0.0.0', port=80)
