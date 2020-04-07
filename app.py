@@ -24,7 +24,7 @@ def about():
 
 @app.route("/abc")
 def certificate():
-    return render_template('certificate.html')
+    return render_template('page1.html')
 
 @app.route('/logout', methods = ['GET'])
 def logout():
