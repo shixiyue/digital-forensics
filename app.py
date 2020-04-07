@@ -15,7 +15,7 @@ app.secret_key = os.urandom(24)
 app.config['UPLOAD_FOLDER'] = "static/upload/"
 app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
 
-webhook = Webhook(app, secret=os.environ['GITHUB_SECRET']) # Defines '/postreceive' endpoint
+webhook = Webhook(app) # Defines '/postreceive' endpoint
 
 # a route where we will display a welcome message via an HTML template
 @app.route("/")
@@ -40,8 +40,6 @@ def logout():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-      flash('Login requested for user {}, remember_me={}'.format(
-        form.email.data, form.remember_me.data))
       resp = make_response(redirect(url_for('index')))
       resp.set_cookie('df_user', form.email.data)
       return resp
@@ -88,5 +86,4 @@ def on_push(data):
 
 # run the application
 if __name__ == "__main__":
-    app.run(debug=True)
-    app.run(host='0.0.0.0', port=80)
+    app.run(debug=True, host='0.0.0.0', port=80)
