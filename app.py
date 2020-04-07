@@ -1,7 +1,8 @@
 from flask import Flask
-from flask import Flask, flash, request, redirect, url_for, make_response, render_template
+from flask import Flask, flash, request, redirect, url_for, make_response, render_template, jsonify
 from werkzeug.utils import secure_filename
 import os
+import subprocess
 import script
 from forms import LoginForm, SignupForm
 
@@ -82,7 +83,12 @@ def upload():
 
 @webhook.hook()        # Defines a handler for the 'push' event
 def on_push(data):
-    print("Got push with: {0}".format(data))
+    if data['commits'][0]['distinct'] == True:
+        try:
+            cmd_output = subprocess.check_output(['git', 'pull', 'origin', 'master'],)
+            return jsonify({'msg': str(cmd_output)})
+        except subprocess.CalledProcessError as error:
+            return jsonify({'msg': str(error.output)})
 
 # run the application
 if __name__ == "__main__":
