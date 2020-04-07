@@ -22,6 +22,10 @@ def index():
 def about():
     return render_template('index.html')
 
+@app.route("/abc")
+def certificate():
+    return render_template('certificate.html')
+
 @app.route('/logout', methods = ['GET'])
 def logout():
     resp = make_response(redirect(url_for('index')))
