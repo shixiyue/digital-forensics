@@ -19,6 +19,10 @@ app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
 webhook = Webhook(app) # Defines '/postreceive' endpoint
 
 # a route where we will display a welcome message via an HTML template
+@app.route("/404")
+def page404():
+    return render_template('404.html')
+
 @app.route("/")
 def index():
     return render_template('index.html')
