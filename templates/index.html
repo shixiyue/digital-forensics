@@ -1,11 +1,5 @@
-﻿{% extends "base.html" %}
-
-{% block content %}
-
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>index</title>
+{% extends "base.html" %}
+{% block head %}
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <link href="static/resources/css/axure_rp_page.css" type="text/css" rel="stylesheet"/>
@@ -48,8 +42,11 @@
       $axure.utils.getOtherPath = function() { return 'resources/Other.html'; };
       $axure.utils.getReloadPath = function() { return 'resources/reload.html'; };
     </script>
-  </head>
-  <body>
+{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
     <div id="base" class="">
 
       <!-- Unnamed (Rectangle) -->
@@ -74,7 +71,5 @@
       </div>
     </div>
     <script src="resources/scripts/axure/ios.js"></script>
-  </body>
 </html>
-
 {% endblock %}
