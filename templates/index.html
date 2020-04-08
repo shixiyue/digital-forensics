@@ -49,32 +49,35 @@
       $axure.utils.getReloadPath = function() { return 'resources/reload.html'; };
     </script>
   </head>
-  <body>
-    <div id="base" class="">
+  <div class="col-md-6 mb-4 mx-auto">
+    <!--Form-->
+    <div class="card">
+      <div class="card-body">
 
-      <!-- Unnamed (Rectangle) -->
-      <div id="u21" class="ax_default box_1">
-        <img id="u21_img" class="img " src="images/index/u21.svg"/>
-        <div id="u21_text" class="text " style="display:none; visibility: hidden">
-          <p></p>
+        <!-- Unnamed (Rectangle) -->
+        <div id="u21" class="ax_default box_1">
+          <img id="u21_img" class="img " src="images/index/u21.svg"/>
+          <div id="u21_text" class="text " style="display:none; visibility: hidden">
+            <p></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (Rectangle) -->
+        <div id="u22" class="ax_default heading_1">
+          <div id="u22_div" class=""></div>
+          <div id="u22_text" class="text ">
+            <p><span>Digital Forensics</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (Inline Frame) -->
+        <div id="u23" class="ax_default">
+          <iframe id="u23_input" scrolling="auto" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
         </div>
       </div>
-
-      <!-- Unnamed (Rectangle) -->
-      <div id="u22" class="ax_default heading_1">
-        <div id="u22_div" class=""></div>
-        <div id="u22_text" class="text ">
-          <p><span>Digital Forensics</span></p>
-        </div>
-      </div>
-
-      <!-- Unnamed (Inline Frame) -->
-      <div id="u23" class="ax_default">
-        <iframe id="u23_input" scrolling="auto" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-      </div>
+      <script src="resources/scripts/axure/ios.js"></script>
     </div>
-    <script src="resources/scripts/axure/ios.js"></script>
-  </body>
+  </div>
 </html>
 
 {% endblock %}
