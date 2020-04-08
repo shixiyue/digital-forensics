@@ -38,20 +38,18 @@
     <script src="static/data/document.js"></script>
     <script src="static/files/index/data.js"></script>
     <script type="text/javascript">
-      $axure.utils.getTransparentGifPath = function() { return 'resources/images/transparent.gif'; };
-      $axure.utils.getOtherPath = function() { return 'resources/Other.html'; };
-      $axure.utils.getReloadPath = function() { return 'resources/reload.html'; };
+      $axure.utils.getTransparentGifPath = function() { return 'static/resources/images/transparent.gif'; };
+      $axure.utils.getOtherPath = function() { return 'static/resources/Other.html'; };
+      $axure.utils.getReloadPath = function() { return 'static/resources/reload.html'; };
     </script>
 {% endblock %}
 
 {% block content %}
-<!DOCTYPE html>
-<html>
     <div id="base" class="">
 
       <!-- Unnamed (Rectangle) -->
       <div id="u21" class="ax_default box_1">
-        <img id="u21_img" class="img " src="images/index/u21.svg"/>
+        <img id="u21_img" class="img " src="static/images/index/u21.svg"/>
         <div id="u21_text" class="text " style="display:none; visibility: hidden">
           <p></p>
         </div>
@@ -70,6 +68,5 @@
         <iframe id="u23_input" scrolling="auto" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
       </div>
     </div>
-    <script src="resources/scripts/axure/ios.js"></script>
-</html>
+    <script src="static/resources/scripts/axure/ios.js"></script>
 {% endblock %}
