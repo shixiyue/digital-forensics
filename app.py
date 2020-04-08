@@ -23,13 +23,17 @@ webhook = Webhook(app) # Defines '/postreceive' endpoint
 def index():
     return render_template('index.html')
 
+@app.route("/dashboard")
+def dashboard():
+    return render_template('dashboard.html')
+
 @app.route("/about")
 def about():
     return render_template('index.html')
 
 @app.route("/abc")
 def certificate():
-    return render_template('page1.html')
+    return render_template('certificate.html')
 
 @app.route('/logout', methods = ['GET'])
 def logout():
@@ -41,7 +45,7 @@ def logout():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-      resp = make_response(redirect(url_for('index')))
+      resp = make_response(redirect(url_for('dashboard')))
       resp.set_cookie('df_user', form.email.data)
       return resp
     return render_template('login.html', form=form)
@@ -51,7 +55,7 @@ def signup():
     form = SignupForm()
     if form.validate_on_submit():
       flash('Verification email sent to {}'.format(form.email.data))
-      resp = make_response(redirect(url_for('index')))
+      resp = make_response(redirect(url_for('dashboard')))
       return resp
     return render_template('signup.html', form=form)
 
@@ -77,9 +81,9 @@ def upload():
             script.check_images(image_dir)
             basename, ext = os.path.splitext(filename)
             result = os.path.join(image_dir, "ela_results", basename + ".ela.png")
-            return render_template('index.html', filename=result)
+            return render_template('dashboard.html', filename=result)
 
-    return render_template('index.html')
+    return render_template('dashboard.html')
 
 @webhook.hook()        # Defines a handler for the 'push' event
 def on_push(data):
