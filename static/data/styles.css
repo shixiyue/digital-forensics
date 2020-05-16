@@ -16,6 +16,8 @@
 }
 .image {
 }
+.line {
+}
 .button {
 }
 .link_button {
@@ -73,5 +75,27 @@
 .box_3 {
 }
 .shape {
+}
+.button1 {
+  font-family:'PingFang SC ', 'PingFang SC', sans-serif;
+  font-weight:400;
+  font-style:normal;
+  font-size:14px;
+  color:#343A40;
+}
+.primary_button {
+  font-family:'PingFang SC ', 'PingFang SC', sans-serif;
+  font-weight:400;
+  font-style:normal;
+  font-size:14px;
+  color:#007BFF;
+}
+.text_button {
+  font-family:'PingFang SC ', 'PingFang SC', sans-serif;
+  font-weight:400;
+  font-style:normal;
+  font-size:14px;
+  color:#007BFF;
+  text-align:right;
 }
 textarea, select, input, button { outline: none; }

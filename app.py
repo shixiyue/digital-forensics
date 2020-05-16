@@ -35,7 +35,7 @@ def dashboard():
 def about():
     return render_template('about.html')
 
-@app.route("/abc")
+@app.route("/certificates/demo")
 def certificate():
     return render_template('certificate.html')
 
