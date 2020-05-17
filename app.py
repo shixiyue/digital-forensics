@@ -11,7 +11,7 @@ from github_webhook import Webhook
 import uuid
 
 # creates a Flask application, named app
-app = Flask(__name__, static_folder=os.path.abspath('/home/ubuntu/digital-forensics/static/'))
+app = Flask(__name__)
 app.secret_key = os.urandom(24)
 app.config['UPLOAD_FOLDER'] = "static/upload/"
 app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
@@ -35,7 +35,7 @@ def dashboard():
 def about():
     return render_template('about.html')
 
-@app.route("/certificates/demo")
+@app.route("/certificates-demo")
 def certificate():
     return render_template('certificate.html')
 
