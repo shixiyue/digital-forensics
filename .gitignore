@@ -1,9 +1,3 @@
-# exclude everything
-static/upload/*
-
-# exception to the rule
-!static/upload/.gitkeep 
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
