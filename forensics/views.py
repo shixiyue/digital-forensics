@@ -7,9 +7,9 @@ from django.db import IntegrityError
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
-from .tokens import account_activation_token
 from django.template.loader import render_to_string
 from django.contrib import messages
+from django.core.files.base import File
 
 from rest_framework.parsers import FileUploadParser
 from rest_framework import permissions, renderers, viewsets, status
@@ -18,6 +18,8 @@ from rest_framework.exceptions import ParseError
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 
+import io
+import hashlib
 
 from .forms import SignUpForm, LoginForm
 from .tokens import account_activation_token
@@ -36,20 +38,22 @@ class SubmissionViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def submit(self, request):
-        image = request.data['image']
-        x = float(request.data['x'])
-        y = float(request.data['y'])
-        width = float(request.data['width'])
-        height = float(request.data['height'])
-
-        try:
-            image = Image.objects.get(image=image, x=x, y=y, width=width, height=height)
-        except Image.DoesNotExist:
-            image = Image.objects.create(image=image, x=x, y=y, width=width, height=height)
-            image.save()
+        images = []
+        del request.data['csrfmiddlewaretoken']
+        for upload in request.data.values():
+            sha = hashlib.sha256()
+            for chunk in upload.chunks():
+                sha.update(chunk)
+            sig = sha.hexdigest()
+            try:
+                image = Image.objects.get(sig=sig)
+            except Image.DoesNotExist:
+                image = Image.objects.create(image=upload, sig=sig)
+                image.save()
+            images.append(image)
         serializer = SubmissionSerializer(data={})
         if serializer.is_valid():
-            serializer.save(images=[image], user=request.user)
+            serializer.save(images=images, user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

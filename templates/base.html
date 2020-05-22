@@ -20,6 +20,20 @@
     <link href="{% static 'css/mdb.min.css' %}" rel="stylesheet">
     <!-- Your custom styles (optional) -->
     <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1 0 auto;
+        }
+    </style>
     {% block head %}
     {% endblock %}
 </head>
@@ -77,10 +91,10 @@
 
             <div class="list-group list-group-flush">
                 {% if user.is_authenticated %}
-                <a href="{% url 'dashboard' %}" class="list-group-item list-group-item-action waves-effect">
+                <a href="{% url 'about' %}" class="list-group-item list-group-item-action waves-effect">
                     <i class="fas fa-chart-pie mr-3"></i>Dashboard
                 </a>
-                
+
                 <a href="{% url 'about' %}" class="list-group-item list-group-item-action waves-effect">
                     <i class="fas fa-history mr-3"></i>History
                 </a>
@@ -119,18 +133,6 @@
     <!--Footer-->
     <footer class="page-footer text-center font-small primary-color-dark darken-2 mt-4 wow fadeIn"
         style="visibility: visible; animation-name: fadeIn;">
-
-        <!--Call to action-->
-
-        <!--/.Call to action-->
-
-        <hr class="my-4">
-
-        <!-- Social icons -->
-        <div class="pb-4">
-
-        </div>
-        <!-- Social icons -->
 
         <!--Copyright-->
         <div class="footer-copyright py-3">

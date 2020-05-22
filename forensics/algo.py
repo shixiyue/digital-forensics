@@ -23,17 +23,7 @@ import seaborn as sns
 import uuid
 
 import cv2
-
-def get_names(fname):
-    TMP_EXT = ".tmp_ela.jpg"
-    ELA_EXT = ".ela.png"
-    
-    basename, _ = os.path.splitext(fname)
-
-    tmp_fname = basename + TMP_EXT
-    ela_fname = basename + ELA_EXT
-
-    return tmp_fname, ela_fname
+import traceback
 
 def flatten_rgba(im):
     """
@@ -47,7 +37,7 @@ def flatten_rgba(im):
 
     return background
 
-def ela(org_fname, quality=35):
+def ela(org_fname, dirname, quality=35):
     """
     Generates an ELA image on save_dir.
     Params:
@@ -58,7 +48,9 @@ def ela(org_fname, quality=35):
     Adapted from:
     https://gist.github.com/cirocosta/33c758ad77e6e6531392
     """
-    tmp_fname, ela_fname = get_names(org_fname)
+    tmp_fname = os.path.join(dirname, "tmp_ela.jpg")
+    ela_fname = os.path.join(dirname, "ela.png")
+
 
     im = Image.open(org_fname)
     if im.mode == "RGBA":
@@ -79,16 +71,6 @@ def ela(org_fname, quality=35):
     ela_im.save(ela_fname)
     os.remove(tmp_fname)
     
-def img_to_jpg(fname, orig_dir): 
-    fpath = os.path.join(orig_dir, fname)
-    jpg_name = "{}.jpg".format(os.path.splitext(fname)[0])
-    jpg_path = os.path.join(orig_dir, jpg_name)
-    
-    img = Image.open(fpath)
-    rgb_img =img.convert('RGB')
-    rgb_img.save(jpg_path)
-    return jpg_name 
-
 def apply_cmap(img, cmap=mplcm.autumn):
     lut = np.array([cmap(i)[:3] for i in np.arange(0,256,1)])
     lut = (lut*255).astype(np.uint8)
@@ -96,31 +78,10 @@ def apply_cmap(img, cmap=mplcm.autumn):
     img_color = np.dstack(channels)
     return img_color
 
-def get_savedir(target_fn):
-    target_split = os.path.split(target_fn)
-    target_parent = "{}/contour_analysis".format(target_split[0])
-    target_savedir = "{}/contour_analysis/{}".format(target_split[0], os.path.splitext(target_split[1])[0])
-
-    # create directory to save analysis files
-    if os.path.exists(target_savedir):
-        print("Target directory exists! Results will be overwritten")
-    elif os.path.exists(target_parent):
-        os.mkdir(target_savedir)
-    else:
-        os.mkdir(target_parent)
-        os.mkdir(target_savedir)
-    return target_savedir
-
-def get_base_images(target_fn, crop=None):
+def get_base_images(target_fn):
     # create base images
     target_original = cv2.imread(target_fn)
     target_overlay = cv2.imread(target_fn)
-    
-    plt.imshow(target_original)
-    # crop to specified region:
-    if crop:
-        target_original = target_original[crop[0]:crop[1], crop[2]:crop[3]]
-        target_overlay =   target_overlay[crop[0]:crop[1], crop[2]:crop[3]]
     
     # check if color image
     im = Image.open(target_fn)
@@ -155,26 +116,6 @@ def keep_contour(cnt, minarea=10, maxarea=1000, parent=0, skip_first=True):
         else:
             return True
 
-def contour_summary(contours, limit=400000):
-    areas = []
-    for c in contours:
-        area = cv2.contourArea(c)
-        areas.append(area)
-    df_cnt = pd.DataFrame({"Area":areas})
-    fig, ax = plt.subplots(figsize=(12,5))
-    
-    # remove exceptional outliers (eg, the image boundaries):
-    if len(df_cnt[df_cnt.Area > df_cnt.Area.mean()]) ==1:
-        print(f"Removing one exceptional outlier: {df_cnt.Area.max()}")
-        df_sample = df_cnt[(df_cnt.Area < df_cnt.Area.mean()) &
-                           (df_cnt.Area < limit)
-                          ]
-    else:
-        df_sample = df_cnt[df_cnt.Area < limit]
-    
-    sns.swarmplot(data=df_sample, y="Area")
-    plt.show()
-
 def collect_contours(contours, hierarchy, minarea=100, maxarea=1000, skip_first=True):
     "collect all contours that are children of the image contour (the bounding box of the image)"
     print("Parameters:", minarea, maxarea)
@@ -186,20 +127,19 @@ def collect_contours(contours, hierarchy, minarea=100, maxarea=1000, skip_first=
             band_cts.append(contours[idx])
     return band_ids, band_cts
 
-def draw_contours(target_overlay, contours, target_savedir, color=(255, 0, 0)):
+def draw_contours(target_overlay, contours, dirname, color=(255, 0, 0)):
     # draw the countours
     target_contours = cv2.drawContours(image = target_overlay, 
                                         contours = contours, 
                                         contourIdx = -1, 
                                         color = color, 
                                         thickness = 1)
-    fig = plt.figure(figsize=(10,15))
+    fig = plt.figure(figsize=(10,10))
     plt.imshow(target_contours)
     for idx,cnt in enumerate(contours):
         (x,y),radius = cv2.minEnclosingCircle(cnt)
-        plt.annotate(f"{idx}", (x,y), c='cyan')
-    plt.savefig("{}/band_detection.png".format(target_savedir))
-    return target_contours
+        plt.annotate(f"{idx}", (x,y), color ='cyan')
+    plt.savefig("{}/band_detection.png".format(dirname))
 
 def get_most_similar(df_matchDist, threshold=0.1):
     """
@@ -211,14 +151,13 @@ def get_most_similar(df_matchDist, threshold=0.1):
     close_contour_sets = {a:list(set(df_reduced.iloc[a,:].dropna().index.values)-set([a]))  for a in df_reduced.index }
     return close_contour_sets
 
-def get_similar_bands(contours, target_savedir, target_original, target_grey, skip_first=True, colored=False):
+def get_similar_bands(contours, dirname, target_original, target_grey, skip_first=True, colored=False):
     # create array of contour shapes
     df_matchDist = pd.DataFrame([ [cv2.matchShapes(c1,c2,1,0.0) for c1 in contours] for c2 in contours ])
     
     # plot clustermap of distances between contours
     g = sns.clustermap(data=df_matchDist, annot=True)
-    plt.savefig("{}/band_clusters.png".format(target_savedir))
-    plt.show()
+    plt.savefig("{}/band_clusters.png".format(dirname))
     
     # filter for contours that are most similar
     close_contour_sets = get_most_similar(df_matchDist,  0.1)
@@ -258,32 +197,30 @@ def get_similar_bands(contours, target_savedir, target_original, target_grey, sk
             band_images[idx] = target_grey[stretched_y : y + h + 5, x : x + w] # add 5px to y axis each way
     return df_matchDist, Z, band_images, sorted_idx, close_contour_sets
 
-def plot_colored_bands(sorted_idx, band_images, target_savedir):
+def plot_colored_bands(sorted_idx, band_images, dirname):
     """
     plot ordered set of band images
     
     sorted_idx:     list of images to draw
     band_images:    dict. where each value is an image array
-    target_savedir: directory to save figure. Set to None if you don't
+    dirname: directory to save figure. Set to None if you don't
                     want to save image.
     """
     # filter list to keep only indicies present in band_images:
     idx_filtered = [ i for i in sorted_idx if i in band_images ]
     
     # plot figure
-    fig = plt.figure(figsize=(30,120))
+    fig = plt.figure(figsize=(25,5))
     for idx,bid in enumerate(idx_filtered):
-        a = fig.add_subplot(30, 10, idx+1)
+        a = fig.add_subplot(1, 5, idx+1)
         a.set_title(f"band #{bid}")
         try:
             plt.imshow(apply_cmap(band_images[bid], cmap=mplcm.gist_rainbow))
         except TypeError:
             print("########### PROBLEM!:",bid, band_images[bid])
     
-    if target_savedir:
-        plt.savefig("{}/band_lineup.png".format(target_savedir))
-    
-    return idx_filtered
+    if dirname:
+        plt.savefig("{}/band_lineup{}.png".format(dirname, '-'.join(str(idx) for idx in idx_filtered)))
 
 def offset_image(coord, band_images, bid, ax, leaves): 
     img = apply_cmap(band_images[bid], cmap=mplcm.gist_rainbow) 
@@ -306,7 +243,7 @@ def offset_image(coord, band_images, bid, ax, leaves):
 
     ax.add_artist(ab)
 
-def plot_dendrogram(Z, idx_filtered, target_savedir, band_images, cutoff=0.8):
+def plot_dendrogram(Z, idx_filtered, dirname, band_images, cutoff=0.8):
     # calculate full dendrogram
     fig, ax = plt.subplots(figsize=(50, 12))
 
@@ -327,85 +264,28 @@ def plot_dendrogram(Z, idx_filtered, target_savedir, band_images, cutoff=0.8):
     for idx,bid in enumerate(idx_filtered):
         offset_image(bid, band_images, bid, ax, dgram['leaves'])
 
-    plt.savefig("{}/band_dendrogram.png".format(target_savedir))
-    plt.show()
-    return dgram
+    plt.savefig("{}/band_dendrogram.png".format(dirname))
 
-def crop_convert(crop, shape, ):
-    if crop:
-        y1, y2, x1, x2 = crop
-        if y1 < 0:
-            y1 = shape[0] + y1
-        if y1 > shape[0]:
-            y1 = shape[0]
-        
-        if y2 < 0:
-            y2 = shape[0] + y2
-        if y2 > shape[0]:
-            y2 = shape[0]
-            
-        if x1 < 0:
-            x1 = shape[1] + x1
-        if x1 > shape[1]:
-            x1 = shape[1]
-        if x2 < 0:
-            x2 = shape[1] + x2
-        if x2 > shape[1]:
-            x2 = shape[1]
-
-        return y1,y2,x1,x2
-    else:
-        return crop
-
-def analyse_image(target_fn, binmin=200, binmax=255, contour_color=(255, 0, 0), skip_first=True, 
-                  color_original=False, dendro_cutoff=0.8, minarea=100, maxarea=1000,
+def analyse_image(target_fn, dirname, binmin=100, binmax=255, contour_color=(255, 0, 0), skip_first=True, 
+                  color_original=False, dendro_cutoff=0.8, minarea=1000, maxarea=50000,
                   ksize=(3,13), min_edge_threshold=15, max_edge_threshold=100, min_length=30,
-                  target_savedir="..", crop=None,
                  ):
-    # show the original image
-    orig = cv2.imread(target_fn)    
-    
-    # convert crop from relative to absolute coords
-    if crop:
-        print("Original image size:", orig.shape)
-        print("Crop coords:", crop)
-        y1,y2,x1,x2 = crop_convert(crop, orig.shape)
-        image_area = (y2-y1) * (x2-x1)
-        print(f"Cropping to: ({x1},{y1}), ({x2},{y2}) (area = {image_area})")
-        print("Crop coords:", crop)
-    else:
-        y1,y2,x1,x2 = (0,orig.shape[0],0,orig.shape[1])
-        image_area = y2*x2
-        print(f"Image area = {image_area}")    
-    crop = (y1,y2,x1,x2)
-    
-    # set up directories and baseline images
-    target_savedir = get_savedir(target_fn)
-    target_original, target_overlay, target_grey = get_base_images(target_fn, crop)
-    
-
-
-    orig = cv2.rectangle(orig, (x1,y1),(x2,y2), (255, 0, 0), 2)
-    plt.imshow(orig)
-    plt.show()
-    
-    # convert to binary image
+    # set up baseline images
+    target_original, target_overlay, target_grey = get_base_images(target_fn)
     target_binary = get_binary(target_grey, binmin, binmax)
-    plt.imshow(target_binary)
     
     # highlight background discontinuities
-    edges, lines = find_discontinuities(target_grey, 
-                                        ksize=(3,13), 
-                                        min_edge_threshold=15, 
-                                        max_edge_threshold=100, 
-                                        min_length=30, 
-                                        target_savedir=target_savedir
-                                       )
+    find_discontinuities(target_grey, 
+        ksize=(3,13), 
+        min_edge_threshold=15, 
+        max_edge_threshold=100, 
+        min_length=30, 
+        dirname=dirname
+    )
 
     # calculate contours of images
-    (contours,hierarchy) = cv2.findContours(target_binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    (contours,hierarchy) = cv2.findContours(target_binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[-2:]
     print(f"{len(contours)} contours found")
-    contour_summary(contours, image_area)
     
     # annotate contours
     band_ids, band_cts = collect_contours(contours, 
@@ -414,16 +294,11 @@ def analyse_image(target_fn, binmin=200, binmax=255, contour_color=(255, 0, 0), 
                                           maxarea=maxarea, 
                                           skip_first=skip_first
                                          )
-    print(f"{len(band_cts)} contours kept")
-    target_contours = draw_contours(target_overlay, 
-                                    band_cts, 
-                                    target_savedir, 
-                                    color=contour_color
-                                   )
+    draw_contours(target_overlay, band_cts, dirname, color=contour_color)
     
     # find similar bands
     df_matchDist, Z, band_images, sorted_idx, close_contour_sets = get_similar_bands(band_cts, 
-                                                                                     target_savedir, 
+                                                                                     dirname, 
                                                                                      target_original, 
                                                                                      target_grey,
                                                                                      skip_first=skip_first, 
@@ -435,23 +310,16 @@ def analyse_image(target_fn, binmin=200, binmax=255, contour_color=(255, 0, 0), 
         if len(targets) > 0:
             src = [source]
             bands = src + targets
-            idx_similar = plot_colored_bands(bands, band_images, None)
-    
-    # plot all bands
-    idx_filtered = plot_colored_bands(sorted_idx, band_images, target_savedir)
-    
-    # plot similar bands on dendrogram
-    dgram = plot_dendrogram(Z, idx_filtered, target_savedir, band_images, cutoff=dendro_cutoff)
-    
-    # return key variables for drilldown analysis
-    return contours, band_cts, df_matchDist, Z, idx_filtered, dgram
+            plot_colored_bands(bands, band_images, dirname)
 
-def find_discontinuities(target_grey, ksize=(3,13), min_edge_threshold=15, max_edge_threshold=100, min_length=30, target_savedir="../"):
+    # plot similar bands on dendrogram
+    idx_filtered = [ i for i in sorted_idx if i in band_images ]
+    plot_dendrogram(Z, idx_filtered, dirname, band_images, cutoff=dendro_cutoff)
+    
+
+def find_discontinuities(target_grey, ksize=(3,13), min_edge_threshold=15, max_edge_threshold=100, min_length=30, dirname=""):
     # blur image
-    target_blurred = cv2.GaussianBlur(src = target_grey, 
-                                        ksize = ksize, 
-                                        sigmaX = 0.0,
-                                      )
+    target_blurred = cv2.GaussianBlur(src = target_grey, ksize = ksize, sigmaX = 0.0)
     # find edges
     edges = cv2.Canny(target_blurred,min_edge_threshold,max_edge_threshold)
 
@@ -464,7 +332,6 @@ def find_discontinuities(target_grey, ksize=(3,13), min_edge_threshold=15, max_e
     fig = plt.figure(figsize=(21,12))
 
     plt.subplot(121),plt.imshow(target_grey,cmap = 'gray')
-    plt.title('Original Image')
     plt.imshow(edges,cmap = 'viridis', alpha=0.5)
     plt.title('Edge Image')
 
@@ -480,12 +347,14 @@ def find_discontinuities(target_grey, ksize=(3,13), min_edge_threshold=15, max_e
     plt.gca().invert_yaxis()
 
     # save image
-    plt.savefig("{}/discontinuity_detection.png".format(target_savedir))
-    plt.show()
-    return edges, lines
+    plt.savefig("{}/discontinuity_detection.png".format(dirname))
 
 @shared_task
-def check_images(org_fname):
-    print(org_fname)
-    ela(org_fname, quality=35)
-    print(4)
+def check_image(org_fname):
+    dirname = os.path.dirname(org_fname)
+    ela(org_fname, dirname, quality=35)
+    try:
+        analyse_image(org_fname, dirname)
+    except Exception:
+        traceback.print_exc()
+    

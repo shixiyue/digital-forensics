@@ -2,8 +2,8 @@ from django.db import models
 from django.contrib.auth.models import (
     BaseUserManager, AbstractUser
 )
+from django.core.files.storage import FileSystemStorage
 
-import hashlib
 import os
 
 class WebsiteUserManager(BaseUserManager):
@@ -19,7 +19,6 @@ class WebsiteUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-
 class WebsiteUser(AbstractUser):
     objects = WebsiteUserManager()
 
@@ -33,44 +32,41 @@ class WebsiteUser(AbstractUser):
         NORMAL = 0
         UNRESTRICTED = 1
     status = models.IntegerField(choices=Status.choices, default=0)
-    REQUIRED_FIELDS = []  # removes email from REQUIRED_FIELDS
+    REQUIRED_FIELDS = []
+
+class MediaFileSystemStorage(FileSystemStorage):
+    def get_available_name(self, name, max_length=None):
+        if max_length and len(name) > max_length:
+            raise(Exception("name's length is greater than max_length"))
+        return name
+
+    def _save(self, name, content):
+        if self.exists(name):
+            # if the file exists, do not call the superclasses _save method
+            return name
+        # if the file is new, DO call it
+        return super(MediaFileSystemStorage, self)._save(name, content)
 
 def upload_file_name(instance, filename):
-    h = instance.sig.split("_")[0]
     _, ext = os.path.splitext(filename)
-    return os.path.join('uploads', h, 'upload' + ext.lower())
+    return os.path.join('uploads', instance.sig, 'upload' + ext.lower())
 
 class Image(models.Model):
     # use the custom storage class fo the FileField
-    sig = models.CharField(max_length=300, blank=True, primary_key=True)
-    image = models.ImageField(upload_to=upload_file_name)
-    x = models.FloatField()
-    y = models.FloatField()
-    width = models.FloatField()
-    height = models.FloatField()
+    sig = models.CharField(max_length=64, primary_key=True)
+    image = models.ImageField(
+        upload_to=upload_file_name, storage=MediaFileSystemStorage())
 
     class Status(models.IntegerChoices):
-        NOT_AVAILABLE = 0
-        PROCESSED = 1
-        CERTIFIED = 2
-        MANIPULATED = 3
-        REDO = 4
+        DEFAULT = 0
+        CERTIFIED = 1
+        MANIPULATED = 2
+        REDO = 3
     certified = models.IntegerField(choices=Status.choices, default=0)
     certificate_link = models.URLField(blank=True)
-
-    def save(self, *args, **kwargs):
-        is_new = self._state.adding
-        if is_new:  # file is new
-            sha = hashlib.sha256()
-            for chunk in self.image.chunks():
-                sha.update(chunk)
-            self.sig = sha.hexdigest() + '_' + '_'.join(str(float(d)) for d in [self.x, self.y, self.width, self.height])
-        super(Image, self).save(*args, **kwargs)
-        print(1)            
     
     def __str__(self):
         return self.sig
-
 
 class Submission(models.Model):
     user = models.ForeignKey(
@@ -90,14 +86,12 @@ class Submission(models.Model):
     submission_time = models.DateTimeField(auto_now_add=True)
 
     class Status(models.IntegerChoices):
-        NO_NEED_TO_PROCESS = -1
-        NOT_PROCESSED = 0
-        PROCESSED = 1
-        UNDER_REVIEW = 2
-        PASSED = 3
-        FAILED = 4
-        APPEAL = 5
-        FLAGGED = 6
+        DEFAULT = 0
+        UNDER_REVIEW = 1
+        PASSED = 2
+        FAILED = 3
+        APPEAL = 4
+        FLAGGED = 5
     status = models.IntegerField(choices=Status.choices, default=0)
     
     class Meta:
