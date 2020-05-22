@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'forensics.apps.ForensicsConfig',
     'rest_framework',
     'django_extensions',
+    'django_tables2',
 ]
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10*1024*1024  # your size limit in bytes
@@ -130,7 +131,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/New_York'
 
 USE_I18N = True
 

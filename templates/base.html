@@ -44,19 +44,16 @@
         <!-- Navbar -->
         <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar" style="">
             <div class="container-fluid">
-
                 <!-- Brand -->
                 <a class="navbar-brand waves-effect" href="{% url 'index' %}">
                     <strong class="blue-text">Digital Forensics</strong>
                 </a>
-
                 <!-- Collapse -->
                 <button class="navbar-toggler" type="button" data-toggle="collapse"
                     data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                     aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-
                 <!-- Links -->
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto">
@@ -91,11 +88,11 @@
 
             <div class="list-group list-group-flush">
                 {% if user.is_authenticated %}
-                <a href="{% url 'about' %}" class="list-group-item list-group-item-action waves-effect">
+                <a href="{% url 'dashboard' %}" class="list-group-item list-group-item-action waves-effect">
                     <i class="fas fa-chart-pie mr-3"></i>Dashboard
                 </a>
 
-                <a href="{% url 'about' %}" class="list-group-item list-group-item-action waves-effect">
+                <a href="{% url 'history' %}" class="list-group-item list-group-item-action waves-effect">
                     <i class="fas fa-history mr-3"></i>History
                 </a>
                 <a href="{% url 'about' %}" class="list-group-item list-group-item-action waves-effect">

@@ -18,4 +18,6 @@ urlpatterns = [
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('dashboard/api/post/', views.SubmissionViewSet.as_view({'post': 'submit'})),
     path('dashboard/api/view/', views.SubmissionViewSet.as_view({'get': 'list'})),
+    path('history/', views.HistoryView.as_view(), name='history'),
+    path('submission/details/<int:id>/', views.details_view, name='submission_details')
 ]

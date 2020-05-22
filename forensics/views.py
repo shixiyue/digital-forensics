@@ -18,50 +18,16 @@ from rest_framework.exceptions import ParseError
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 
+import django_tables2 as tables
+
 import io
 import hashlib
 
 from .forms import SignUpForm, LoginForm
 from .tokens import account_activation_token
-from .models import WebsiteUser, Image, Submission
+from .models import WebsiteUser, Image, Submission, SubmissionTable
 from .serializers import ImageSerializer
 from .serializers import SubmissionSerializer
-
-class ImageViewSet(viewsets.ModelViewSet):
-    queryset = Image.objects.all()
-    serializer_class = ImageSerializer
-
-class SubmissionViewSet(viewsets.ModelViewSet):
-    queryset = Submission.objects.all()
-    serializer_class = SubmissionSerializer
-    parser_classes = (FormParser, MultiPartParser)
-
-    @action(detail=True, methods=['post'])
-    def submit(self, request):
-        images = []
-        request.data.pop('csrfmiddlewaretoken', None)
-        try:
-            request.data.pop('apply')
-            require_certificate = 1
-        except:
-            require_certificate = 0
-        for upload in request.data.values():
-            sha = hashlib.sha256()
-            for chunk in upload.chunks():
-                sha.update(chunk)
-            sig = sha.hexdigest()
-            try:
-                image = Image.objects.get(sig=sig)
-            except Image.DoesNotExist:
-                image = Image.objects.create(image=upload, sig=sig)
-                image.save()
-            images.append(image)
-        serializer = SubmissionSerializer(data={'status':require_certificate})
-        if serializer.is_valid():
-            serializer.save(images=images, user=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 def index_view(request):
     return render(request, 'index.html')
@@ -143,3 +109,45 @@ def dashboard_view(request):
     if request.user.is_authenticated:
         return render(request, 'dashboard.html')
     return redirect('index')
+
+def details_view(request, id):
+    return render(request, 'index.html')
+
+class SubmissionViewSet(viewsets.ModelViewSet):
+    queryset = Submission.objects.all()
+    serializer_class = SubmissionSerializer
+    parser_classes = (FormParser, MultiPartParser)
+
+    @action(detail=True, methods=['post'])
+    def submit(self, request):
+        images = []
+        request.data.pop('csrfmiddlewaretoken', None)
+        try:
+            request.data.pop('apply')
+            require_certificate = 1
+        except:
+            require_certificate = 0
+        for upload in request.data.values():
+            sha = hashlib.sha256()
+            for chunk in upload.chunks():
+                sha.update(chunk)
+            sig = sha.hexdigest()
+            try:
+                image = Image.objects.get(sig=sig)
+            except Image.DoesNotExist:
+                image = Image.objects.create(image=upload, sig=sig)
+                image.save()
+            images.append(image)
+        serializer = SubmissionSerializer(data={'status':require_certificate})
+        if serializer.is_valid():
+            serializer.save(images=images, user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class HistoryView(tables.SingleTableView):
+    table_class = SubmissionTable
+    template_name = "history.html"
+
+    def get_queryset(self):
+        return Submission.objects.filter(user=self.request.user)
