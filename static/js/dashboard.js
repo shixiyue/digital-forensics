@@ -92,6 +92,9 @@ window.addEventListener('DOMContentLoaded', function () {
     }
     var csrftoken = Cookies.get('csrftoken');
     formData.append('csrfmiddlewaretoken', csrftoken);
+    if ($('#is-applying').is(':checked')) {
+      formData.append('apply', 'true');
+    }
     $.ajax({
       url: 'api/post/',
       type: 'POST',

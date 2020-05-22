@@ -39,7 +39,12 @@ class SubmissionViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def submit(self, request):
         images = []
-        del request.data['csrfmiddlewaretoken']
+        request.data.pop('csrfmiddlewaretoken', None)
+        try:
+            request.data.pop('apply')
+            require_certificate = 1
+        except:
+            require_certificate = 0
         for upload in request.data.values():
             sha = hashlib.sha256()
             for chunk in upload.chunks():
@@ -51,7 +56,7 @@ class SubmissionViewSet(viewsets.ModelViewSet):
                 image = Image.objects.create(image=upload, sig=sig)
                 image.save()
             images.append(image)
-        serializer = SubmissionSerializer(data={})
+        serializer = SubmissionSerializer(data={'status':require_certificate})
         if serializer.is_valid():
             serializer.save(images=images, user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)

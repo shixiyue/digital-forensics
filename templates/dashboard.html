@@ -32,10 +32,22 @@
 <!--Grid row-->
 <div class="row wow fadeIn" style="visibility: visible; animation-name: fadeIn;">
   <!--Grid column-->
-  <div class="col-md-9 mb-4">
+  <div class="col-md-12 mb-4">
     <form id="upload-form" method="POST" enctype="multipart/form-data">
-      <input name="file" type="file" id="input" accept="image/*">
-      <button type="button" class="btn btn-default" id="done">Finished Cropping</button>
+      <div class="row">
+        <div class="col">
+          <input name="file" type="file" id="input" accept="image/*">
+        </div>
+        <div class="col">
+          <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" id="is-applying">
+            <label class="custom-control-label" for="is-applying">Applying for Certificate</label>
+          </div>
+        </div>
+        <div class="col">
+          <button type="button" class="btn btn-default" id="done">Finished Cropping</button>
+        </div>
+      </div>
     </form>
     <div class="row" id="uploads" style="margin-top: 20px;"></div>
     <div class="alert" role="alert"></div>
