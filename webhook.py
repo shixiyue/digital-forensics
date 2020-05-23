@@ -5,7 +5,6 @@ import subprocess
 app = Flask(__name__)  # Standard Flask app
 webhook = Webhook(app)  # Defines '/postreceive' endpoint
 
-
 @webhook.hook()        # Defines a handler for the 'push' event
 def on_push(data):
     if data['commits'][0]['distinct'] == True:
@@ -18,4 +17,4 @@ def on_push(data):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8100)
+    app.run(debug=True, host='0.0.0.0', port=8100)
