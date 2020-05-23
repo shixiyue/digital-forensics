@@ -96,13 +96,14 @@ class Submission(models.Model):
     submission_time = models.DateTimeField(auto_now_add=True)
 
     class Status(models.IntegerChoices):
-        DEFAULT = 0
-        UNDER_REVIEW = 1
-        PASSED = 2
-        FAILED = 3
-        APPEAL = 4
-        FLAGGED = 5
-    status = models.IntegerField(choices=Status.choices, default=0)
+        NOT_REQUESTED = 0
+        WAITING = 1
+        UNDER_REVIEW = 2
+        CERTIFIED = 3
+        FAILED = 4
+        APPEAL = 5
+        FLAGGED = 6
+    status = models.IntegerField(choices=Status.choices, default=0, verbose_name="Certificate Status")
 
     class Meta:
         ordering = ['submission_time']
