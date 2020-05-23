@@ -114,7 +114,6 @@ class Submission(models.Model):
     def num_of_images(self):
         return self.images.count()
 
-
 class SubmissionTable(tables.Table):
     id = tables.Column(verbose_name="Submission ID")
     submission_time = tables.DateTimeColumn(
@@ -134,8 +133,11 @@ class SubmissionTable(tables.Table):
         <div class="dropleft">
             <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                {% if record.status == 4 %}
                 <a class="dropdown-item" href="#">Appeal</a>
+                {% elif record.status == 0 %}
                 <a class="dropdown-item" href="#">Request Certificates</a>
+                {% endif %}
                 <a class="dropdown-item" href="#">Contact Support</a>
             </div>
         </div>
