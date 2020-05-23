@@ -7,6 +7,7 @@ from .algo import check_image
 from .models import Image
 from myproject.settings import PROJECT_ROOT
 
+
 @receiver(post_save, sender=Image)
 def run_detection_script(sender, instance, created, **kwargs):
     if created:

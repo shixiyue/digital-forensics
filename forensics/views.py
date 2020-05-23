@@ -1,4 +1,6 @@
 from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_text
@@ -21,6 +23,7 @@ from rest_framework.response import Response
 import django_tables2 as tables
 
 import io
+import os
 import hashlib
 
 from .forms import SignUpForm, LoginForm
@@ -28,12 +31,16 @@ from .tokens import account_activation_token
 from .models import WebsiteUser, Image, Submission, SubmissionTable
 from .serializers import ImageSerializer
 from .serializers import SubmissionSerializer
+from myproject.settings import PROJECT_ROOT
+
 
 def index_view(request):
     return render(request, 'index.html')
 
+
 def about_view(request):
     return render(request, 'about.html')
+
 
 def signup_view(request):
     if request.user.is_authenticated:
@@ -48,7 +55,7 @@ def signup_view(request):
             user.save()
             current_site = get_current_site(request)
             subject = 'Digital Forensics: Please Activate Your Account'
-            # load a template like get_template() 
+            # load a template like get_template()
             # and calls its render() method immediately.
             message = render_to_string('activation_request.html', {
                 'user': user,
@@ -57,14 +64,17 @@ def signup_view(request):
                 # method will generate a hash value with user related data
                 'token': account_activation_token.make_token(user),
             })
-            user.email_user(subject, message, from_email='digitalforensics.report@gmail.com')
+            user.email_user(subject, message,
+                            from_email='digitalforensics.report@gmail.com')
             return redirect('activation_sent')
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
 
+
 def activation_sent_view(request):
     return render(request, 'activation_sent.html')
+
 
 def activate(request, uidb64, token):
     try:
@@ -74,13 +84,14 @@ def activate(request, uidb64, token):
         user = None
     # checking if the user exists, if the token is valid.
     if user is not None and account_activation_token.check_token(user, token):
-        # if valid set active true 
+        # if valid set active true
         user.is_active = True
         user.save()
         login(request, user)
         return redirect('index')
     else:
         return render(request, 'activation_invalid.html')
+
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -96,22 +107,45 @@ def login_view(request):
                     form = login(request, user)
                     return redirect('index')
             else:
-                messages.error(request, "Invalid username or password, or you haven't activate your account yet.")
+                messages.error(
+                    request, "Invalid username or password, or you haven't activate your account yet.")
     else:
         form = LoginForm()
     return render(request, 'login.html', {'form': form})
 
+
+@login_required(login_url='/login/')
 def logout_view(request):
     logout(request)
     return render(request, 'index.html')
 
-def dashboard_view(request):
-    if request.user.is_authenticated:
-        return render(request, 'dashboard.html')
-    return redirect('index')
 
+@login_required(login_url='/login/')
+def dashboard_view(request):
+    return render(request, 'dashboard.html')
+
+
+@login_required(login_url='/login/')
 def details_view(request, id):
-    return render(request, 'index.html')
+    submission = Submission.objects.get(id=id)
+    images = submission.images.all()
+    return render(request, 'submission_details.html', {'id': id, 'images': images})
+
+
+@login_required(login_url='/login/')
+def analysis_view(request, id, sig):
+    image = Image.objects.get(sig=sig)
+    upload = image.image.url
+    dirname = os.path.dirname(upload)
+    outputs = []
+    for output in sorted(os.listdir(PROJECT_ROOT + dirname)):
+        print(output)
+        outputs.append(os.path.join(dirname, output))
+    print(outputs)
+    outputs.remove(upload)
+
+    return render(request, 'analysis.html', {'id': id, 'upload': upload, 'outputs': outputs})
+
 
 class SubmissionViewSet(viewsets.ModelViewSet):
     queryset = Submission.objects.all()
@@ -138,14 +172,16 @@ class SubmissionViewSet(viewsets.ModelViewSet):
                 image = Image.objects.create(image=upload, sig=sig)
                 image.save()
             images.append(image)
-        serializer = SubmissionSerializer(data={'status':require_certificate})
+        serializer = SubmissionSerializer(data={'status': require_certificate})
         if serializer.is_valid():
             serializer.save(images=images, user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class HistoryView(tables.SingleTableView):
+
+class HistoryView(LoginRequiredMixin, tables.SingleTableView):
+    login_url = '/login/'
     table_class = SubmissionTable
     template_name = "history.html"
 

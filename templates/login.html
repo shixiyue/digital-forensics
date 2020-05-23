@@ -15,31 +15,31 @@
 
       {% for message in messages %}
       <p style="color: red">{{ message }}</p>
-{% endfor %}
+      {% endfor %}
 
       <!--Body-->
       <form method="post">
         {% csrf_token %}
         <div class="form-group">
-            <div class="md-form">
-              <p >
-                {{ form.email.label_tag }}
-                {{ form.email }}
-                {% for error in form.email.errors %}
-                  <p style="color: red">{{ error }}</p>
-                {% endfor %}
-              </p>
-            </div>
-            <div class="md-form">
-              <p >
-                {{ form.password.label_tag }}
-                {{ form.password }}
-                {% for error in form.password.errors %}
-                  <p style="color: red">{{ error }}</p>
-                {% endfor %}
-              </p>
-            </div>
-        </div>            
+          <div class="md-form">
+            <p>
+              {{ form.email.label_tag }}
+              {{ form.email }}
+              {% for error in form.email.errors %}
+            <p style="color: red">{{ error }}</p>
+            {% endfor %}
+            </p>
+          </div>
+          <div class="md-form">
+            <p>
+              {{ form.password.label_tag }}
+              {{ form.password }}
+              {% for error in form.password.errors %}
+            <p style="color: red">{{ error }}</p>
+            {% endfor %}
+            </p>
+          </div>
+        </div>
         <div class="text-center">
           <button type="submit" class="btn btn-info waves-effect waves-light">Login</button>
         </div>

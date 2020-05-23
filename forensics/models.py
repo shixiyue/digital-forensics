@@ -3,13 +3,12 @@ from django.contrib.auth.models import (
     BaseUserManager, AbstractUser
 )
 from django.core.files.storage import FileSystemStorage
-from django.utils import timezone
 
 import django_tables2 as tables
 from django_tables2.utils import A
 
 import os
-import pytz
+
 
 class WebsiteUserManager(BaseUserManager):
     def create_superuser(self, email, password):
@@ -114,19 +113,21 @@ class Submission(models.Model):
     def num_of_images(self):
         return self.images.count()
 
+
 class SubmissionTable(tables.Table):
     id = tables.Column(verbose_name="Submission ID")
-    submission_time = tables.DateTimeColumn(format ='Y-m-d', verbose_name="Date")
+    submission_time = tables.DateTimeColumn(
+        format='Y-m-d', verbose_name="Date")
     num_of_images = tables.Column(
-        accessor=A('num_of_images'), 
+        accessor=A('num_of_images'),
         verbose_name='Number of Images'
     )
     links = tables.LinkColumn(
-        'submission_details', 
-        verbose_name='Analysis and Certificates', 
-        text='Details', 
+        'submission_details',
+        verbose_name='Analysis and Certificates',
+        text='Details',
         args=[A('pk')],
-        attrs= {"a": {"style": "color: #0275d8;"}}
+        attrs={"a": {"style": "color: #0275d8;"}}
     )
     template = """
         <div class="dropleft">
@@ -144,5 +145,6 @@ class SubmissionTable(tables.Table):
         model = Submission
         template_name = "django_tables2/bootstrap4.html"
         fields = ("id", "submission_time", "status")
-        sequence = ("id", "submission_time", "status", "num_of_images", "links", "actions")
+        sequence = ("id", "submission_time", "status",
+                    "num_of_images", "links", "actions")
         attrs = {"style": "background-color: #ffffff;"}

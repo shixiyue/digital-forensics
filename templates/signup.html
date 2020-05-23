@@ -17,18 +17,18 @@
       <form method="post">
         {% csrf_token %}
         <div class="form-group">
-            {% for field in form %}
-            <div class="md-form">
-              <p >
-                {{ field.label_tag }}
-                {{ field }}
-                {% for error in field.errors %}
-                  <p style="color: red">{{ error }}</p>
-                {% endfor %}
-              </p>
-            </div>
+          {% for field in form %}
+          <div class="md-form">
+            <p>
+              {{ field.label_tag }}
+              {{ field }}
+              {% for error in field.errors %}
+            <p style="color: red">{{ error }}</p>
             {% endfor %}
-        </div>            
+            </p>
+          </div>
+          {% endfor %}
+        </div>
         <div class="text-center">
           <button type="submit" class="btn btn-info waves-effect waves-light">Sign up</button>
         </div>

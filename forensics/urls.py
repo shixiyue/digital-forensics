@@ -1,11 +1,8 @@
 from django.urls import path
 from django.conf.urls import include, url
-from rest_framework.routers import DefaultRouter
+from django.contrib.auth.decorators import login_required
 
 from . import views
-
-#router = DefaultRouter()
-#router.register(r'dashboard', views.SubmissionViewSet)
 
 urlpatterns = [
     path('', views.index_view, name='index'),
@@ -13,11 +10,17 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('sent/', views.activation_sent_view, name="activation_sent"),
-    path('activate/<slug:uidb64>/<slug:token>/', views.activate, name='activate'),
+    path('activate/<slug:uidb64>/<slug:token>/',
+         views.activate, name='activate'),
     path('about/', views.about_view, name='about'),
     path('dashboard/', views.dashboard_view, name='dashboard'),
-    path('dashboard/api/post/', views.SubmissionViewSet.as_view({'post': 'submit'})),
-    path('dashboard/api/view/', views.SubmissionViewSet.as_view({'get': 'list'})),
+    path('dashboard/api/post/',
+         views.SubmissionViewSet.as_view({'post': 'submit'})),
+    path('dashboard/api/view/',
+         views.SubmissionViewSet.as_view({'get': 'list'})),
     path('history/', views.HistoryView.as_view(), name='history'),
-    path('submission/details/<int:id>/', views.details_view, name='submission_details')
+    path('history/submission/<int:id>/',
+         views.details_view, name='submission_details'),
+    path('history/submission/<int:id>/analysis/<str:sig>/',
+         views.analysis_view, name='analysis')
 ]
