@@ -26,7 +26,7 @@ window.addEventListener('DOMContentLoaded', function () {
     if (files && files.length > 0) {
       file = files[0];
       filename = file.name;
-
+      
       extension = filename.split('.').pop();
       if (extension === 'tiff' || extension === 'tif') {
         reader = new FileReader();
