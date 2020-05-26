@@ -129,7 +129,7 @@ def dashboard_view(request):
 def details_view(request, id):
     submission = Submission.objects.get(id=id)
     images = submission.images.all()
-    return render(request, 'submission_details.html', {'id': id, 'images': images})
+    return render(request, 'submission_details.html', {'id': id, 'submission': submission, 'images': images})
 
 
 @login_required(login_url='/login/')

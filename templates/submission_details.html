@@ -1,5 +1,19 @@
 {% extends "base.html" %}
 {% block head %}
+<style>
+    p {
+        font-size: 13px;
+        padding-right: 8px;
+        margin: 0px;
+    }
+
+    .btn {
+        white-space: nowrap;
+        text-align: center;
+        padding: 0px;
+        margin: 0px;
+    }
+</style>
 {% endblock %}
 {% block content %}
 <!-- Heading -->
@@ -25,13 +39,24 @@
                     src="{{ i.image.url }}" />
             </div>
             <div style="background-color: darkgray;">
-                <div class="btn-group btn-group-sm d-flex" role="group">
-                    <a href="{% url 'analysis' id=id sig=i.sig %}" class="btn btn-light" role="button"
-                        class="btn btn-light" style="font-size: 12px;">View Analysis</a>
-                    {% if i.status == 1 %}
-                    <a href="#" class="btn btn-primary" role="button" class="btn btn-light"
-                        style="font-size: 12px;">View Certificate</a>
-                    {% endif %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <a href="{% url 'analysis' id=id sig=i.sig %}" class="btn btn-light btn-sm"
+                            role="button" style="font-size: 13px;">View Analysis</a>
+                    </div>
+                    <div class="col-md-6 text-center justify-content-center align-self-center">
+                        {% if submission.status == 0 %}
+                        <p>Not Requested</p>
+                        {% elif i.status == 1 %}
+                        <a href="#" class="btn btn-primary btn-sm" role="button">View Certificate</a>
+                        {% elif submission.status == 1 or submission.status == 2 %}
+                        <p>Waiting to Verify </p>
+                        {% elif i.status == 2 %}
+                        <p>Failed Tests</p>
+                        {% elif i.status == 3 %}
+                        <p>Appealing</p>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
