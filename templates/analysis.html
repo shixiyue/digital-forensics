@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 {% block head %}
+<style>
+    .img-fluid {
+        margin: 0 auto;
+    }
+</style>
+{% endblock %}
+{% block head %}
 {% endblock %}
 {% block content %}
 <!-- Heading -->
@@ -22,12 +29,12 @@
     <div class="row">
         <div class="col-md-6 col-xs-5">
             <h4>Uploaded Image</h4>
-            <img class="img-fluid" style="margin: 0 auto;" src="{{ upload }}" />
+            <img class="img-fluid" src="{{ upload }}" />
         </div>
         <div class="col-md-6 col-xs-5">
             <h4>Analysis Outputs</h4>
             {% for output in outputs %}
-            <img class="img-fluid" style="margin: 0 auto;" src="{{ output }}" />
+            <img class="img-fluid" src="{{ output }}" />
             {% endfor %}
         </div>
     </div>
