@@ -141,9 +141,7 @@ def analysis_view(request, id, sig):
     dirname = os.path.dirname(upload)
     outputs = []
     for output in sorted(os.listdir(PROJECT_ROOT + dirname)):
-        print(output)
         outputs.append(os.path.join(dirname, output))
-    print(outputs)
     outputs.remove(upload)
 
     return render(request, 'analysis.html', {'id': id, 'upload': upload, 'outputs': outputs})
