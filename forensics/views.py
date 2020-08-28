@@ -186,6 +186,4 @@ class HistoryView(LoginRequiredMixin, tables.SingleTableView):
     template_name = "history.html"
 
     def get_queryset(self):
-        table = Submission.objects.filter(user=self.request.user)
-        table.order_by = '-id'
-        return table
+        return Submission.objects.filter(user=self.request.user).order_by('-id')
