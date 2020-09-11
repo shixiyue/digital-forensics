@@ -176,12 +176,14 @@ def analysis_view(request, id, sig):
 def analysis_admin_view(request, id, sig):
     image = Image.objects.get(sig=sig)
     if request.method == "POST":
-        if request.POST.get("default") and request.POST.get("default") == "on":
-            image.certified = 0
-        elif request.POST.get("pass") and request.POST.get("pass") == "on":
-            image.certified = 1
-        else:
-            image.certified = 2
+        status = request.POST.get("status"):
+        if status:
+            if status == "default":
+                image.certified = 0
+            elif status == "pass":
+                image.certified = 1
+            else:
+                image.certified = 2
 
     upload = image.image.url
     dirname = os.path.dirname(upload)

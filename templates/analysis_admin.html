@@ -14,9 +14,9 @@
         <h4 class="mb-2 mb-sm-0 pt-1">
             <a href="{% url 'index' %}">Home Page</a>
             <span>/</span>
-            <a href="{% url 'history' %}">History</a>
+            <a href="{% url 'history_admin' %}">Adminy</a>
             <span>/</span>
-            <a href="{% url 'submission_details' id=id %}">History {{ id }}</a>
+            <a href="{% url 'submission_admin' id=id %}">Admin {{ id }}</a>
             <span>/</span>
             <span>Image Analysis</span>
         </h4>
@@ -41,13 +41,13 @@
             {% csrf_token %}
             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                 <label class="btn btn-primary active">
-                <input type="radio" name="default" id="default" autocomplete="off" checked> No Decision
+                <input type="radio" name="status" id="default" value="default" autocomplete="off" checked> No Decision
                 </label>
                 <label class="btn btn-success">
-                <input type="radio" name="pass" id="pass" autocomplete="off"> Pass
+                <input type="radio" name="status" id="pass" value="pass" autocomplete="off"> Pass
                 </label>
                 <label class="btn btn-danger">
-                <input type="radio" name="fail" id="fail" autocomplete="off"> Fail
+                <input type="radio" name="status" id="fail" value="fail" autocomplete="off"> Fail
                 </label>
             </div>
             <input type="submit" class="btn btn-light" id="done" value="Submit">
