@@ -1,5 +1,6 @@
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 from django.contrib.sites.shortcuts import get_current_site
@@ -137,12 +138,22 @@ def dashboard_view(request):
 
 
 @login_required(login_url="/login/")
-def details_view(request, id):
+def submission_details_view(request, id):
     submission = Submission.objects.get(id=id)
     images = submission.images.all()
     return render(
         request,
         "submission_details.html",
+        {"id": id, "submission": submission, "images": images},
+    )
+
+@staff_member_required
+def submission_admin_view(request, id):
+    submission = Submission.objects.get(id=id)
+    images = submission.images.all()
+    return render(
+        request,
+        "submission_admin.html",
         {"id": id, "submission": submission, "images": images},
     )
 
@@ -159,6 +170,20 @@ def analysis_view(request, id, sig):
 
     return render(
         request, "analysis.html", {"id": id, "upload": upload, "outputs": outputs}
+    )
+
+@staff_member_required
+def analysis_admin_view(request, id, sig):
+    image = Image.objects.get(sig=sig)
+    upload = image.image.url
+    dirname = os.path.dirname(upload)
+    outputs = []
+    for output in sorted(os.listdir(PROJECT_ROOT + dirname)):
+        outputs.append(os.path.join(dirname, output))
+    outputs.remove(upload)
+
+    return render(
+        request, "analysis_admin.html", {"id": id, "upload": upload, "outputs": outputs}
     )
 
 

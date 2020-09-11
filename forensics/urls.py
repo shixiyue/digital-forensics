@@ -21,11 +21,17 @@ urlpatterns = [
     path("dashboard/api/post/", views.SubmissionViewSet.as_view({"post": "submit"})),
     path("dashboard/api/view/", views.SubmissionViewSet.as_view({"get": "list"})),
     path("history/", views.HistoryView.as_view(), name="history"),
-    path("history/submission/<int:id>/", views.details_view, name="submission_details"),
+    path("history/submission/<int:id>/", views.submission_details_view, name="submission_details"),
     path(
         "history/submission/<int:id>/analysis/<str:sig>/",
         views.analysis_view,
         name="analysis",
     ),
     path("history_admin/", views.HistoryAdminView.as_view(), name="history_admin"),
+    path("history_admin/submission/<int:id>/", views.submission_admin_view, name="submission_admin"),
+    path(
+        "history_admin/submission/<int:id>/analysis/<str:sig>/",
+        views.analysis_admin_view,
+        name="analysis_admin",
+    ),
 ]

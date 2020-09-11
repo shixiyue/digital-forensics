@@ -116,7 +116,7 @@ class Submission(models.Model):
         return self.images.count()
 
     def email(self):
-        return self.user.email()
+        return self.user.email
     
     def admin_email(self):
         if self.admin is not None:
@@ -174,11 +174,17 @@ class SubmissionAdminTable(tables.Table):
         accessor=A("num_of_images"), verbose_name="Number of Images"
     )
     links = tables.LinkColumn(
-        "submission_details",
+        "submission_admin",
         verbose_name="Analysis and Certificates",
         text="Details",
         args=[A("pk")],
         attrs={"a": {"style": "color: #0275d8;"}},
+    )
+    email = tables.Column(
+        accessor=A("email"), verbose_name="User Email"
+    )
+    admin_email = tables.Column(
+        accessor=A("admin_email"), verbose_name="Last Admin Processed"
     )
 
     class Meta:
@@ -188,7 +194,7 @@ class SubmissionAdminTable(tables.Table):
         sequence = (
             "id",
             "submission_time",
-            "email"
+            "email",
             "status",
             "num_of_images",
             "admin_email",

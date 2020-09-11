@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block head %}
+<style>
+    .img-fluid {
+        margin: 0 auto;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<!-- Heading -->
+<div class="card mb-4 wow fadeIn" style="visibility: visible; animation-name: fadeIn;">
+    <!--Card content-->
+    <div class="card-body d-sm-flex justify-content-between">
+        <h4 class="mb-2 mb-sm-0 pt-1">
+            <a href="{% url 'index' %}">Home Page</a>
+            <span>/</span>
+            <a href="{% url 'history' %}">History</a>
+            <span>/</span>
+            <a href="{% url 'submission_details' id=id %}">Submission {{ id }}</a>
+            <span>/</span>
+            <span>Image Analysis</span>
+        </h4>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-xs-5">
+            <h4>Uploaded Image</h4>
+            <img class="img-fluid" src="{{ upload }}" />
+        </div>
+        <div class="col-md-6 col-xs-5">
+            <h4>Analysis Outputs</h4>
+            {% for output in outputs %}
+            <img class="img-fluid" src="{{ output }}" />
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-primary active">
+              <input type="radio" name="options" id="default" autocomplete="off" checked> No Decision
+            </label>
+            <label class="btn btn-success">
+              <input type="radio" name="options" id="pass" autocomplete="off"> Pass
+            </label>
+            <label class="btn btn-danger">
+              <input type="radio" name="options" id="fail" autocomplete="off"> Fail
+            </label>
+        </div>
+        <button type="button" class="btn btn-light" id="done">Submit</button>
+    </div>
+</div>
+{% endblock %}

@@ -23,7 +23,7 @@
         <h4 class="mb-2 mb-sm-0 pt-1">
             <a href="{% url 'index' %}">Home Page</a>
             <span>/</span>
-            <a href="{% url 'history' %}">History</a>
+            <a href="{% url 'history_admin' %}">Admin</a>
             <span>/</span>
             <span>Submission {{ id }}</span>
         </h4>
@@ -41,20 +41,31 @@
             <div style="background-color: darkgray;">
                 <div class="row">
                     <div class="col-md-6">
+                        {% if submission.status == 0 %}
                         <a href="{% url 'analysis' id=id sig=i.sig %}" class="btn btn-light btn-sm"
                             role="button" style="font-size: 13px;">View Analysis</a>
+                        {% elif i.certified == 0 %}
+                        <a href="{% url 'analysis_admin' id=id sig=i.sig %}" class="btn btn-light btn-sm"
+                            role="button" style="font-size: 13px;">Process</a>
+                        {% else %}
+                        <a href="{% url 'analysis_admin' id=id sig=i.sig %}" class="btn btn-light btn-sm"
+                            role="button" style="font-size: 13px;">Reprocess</a>
+                        {% endif %}
+                        </a>
                     </div>
                     <div class="col-md-6 text-center justify-content-center align-self-center">
                         {% if submission.status == 0 %}
-                        <p>Not Requested</p>
+                        <p>N/A</p>
+                        {% elif i.certified == 0 %}
+                        <p>Not Processed</p>
+                        {% elif submission.status == 5 and i.certified == 1 %}
+                        <p>Last Passed</p>
+                        {% elif submission.status == 5 and i.certified == 2 %}
+                        <p>Last Failed</p>
                         {% elif i.certified == 1 %}
-                        <a href="#" class="btn btn-primary btn-sm" role="button">View Certificate</a>
-                        {% elif submission.status == 1 or submission.status == 2 %}
-                        <p>Waiting to Verify </p>
+                        <p>Passed Tests</p>
                         {% elif i.certified == 2 %}
                         <p>Failed Tests</p>
-                        {% elif i.certified == 3 %}
-                        <p>Appealing</p>
                         {% endif %}
                     </div>
                 </div>
