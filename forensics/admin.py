@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import WebsiteUser
+from .models import WebsiteUser, Submission
 
 
 class WebsiteAdmin(UserAdmin):
@@ -8,3 +8,4 @@ class WebsiteAdmin(UserAdmin):
 
 
 admin.site.register(WebsiteUser, WebsiteAdmin)
+admin.site.register(Submission)
