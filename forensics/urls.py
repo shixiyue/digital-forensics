@@ -27,5 +27,5 @@ urlpatterns = [
         views.analysis_view,
         name="analysis",
     ),
-    path("admin/", views.HistoryAdminView.as_view(), name="admin"),
+    path("history_admin/", views.HistoryAdminView.as_view(), name="history_admin"),
 ]
