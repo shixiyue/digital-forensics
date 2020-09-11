@@ -120,7 +120,7 @@ class Submission(models.Model):
     
     def admin_email(self):
         if self.admin is not None:
-            return self.admin.email()
+            return self.admin.email
         else:
             return "None"
 
