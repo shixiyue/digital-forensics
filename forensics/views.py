@@ -152,7 +152,7 @@ def submission_admin_view(request, id):
     submission = Submission.objects.get(id=id)
     images = submission.images.all()
     num_cert = 0
-    if submission.stauts != 0:
+    if submission.status != 0:
         for image in images:
             if image.status == 1:
                 num_cert += 1
