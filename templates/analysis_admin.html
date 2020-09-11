@@ -38,6 +38,7 @@
     </div>
     <div class="row">
         <form action="#" method="post">
+            {% csrf_token %}
             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                 <label class="btn btn-primary active">
                 <input type="radio" name="options" id="default" autocomplete="off" checked> No Decision
@@ -49,7 +50,7 @@
                 <input type="radio" name="options" id="fail" autocomplete="off"> Fail
                 </label>
             </div>
-            <input type="submit" class="btn btn-light" id="done">Submit
+            <input type="submit" class="btn btn-light" id="done" value="Submit">
         </form>
     </div>
 </div>
