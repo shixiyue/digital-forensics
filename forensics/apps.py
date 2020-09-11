@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class ForensicsConfig(AppConfig):
-    name = 'forensics'
+    name = "forensics"
 
     def ready(self):
         from .signals import run_detection_script

@@ -7,7 +7,7 @@ from .models import WebsiteUser
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = WebsiteUser
-        fields = ('email',)
+        fields = ("email",)
 
 
 class ImageSerializer(serializers.ModelSerializer):
