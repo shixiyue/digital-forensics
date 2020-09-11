@@ -86,8 +86,8 @@
 
             <div class="list-group list-group-flush">
                 {% if user.is_staff %}
-                <a href="{% url 'history' %}" class="list-group-item list-group-item-action waves-effect">
-                    <i class="fas fa-admin mr-3"></i>Admin
+                <a href="{% url 'admin' %}" class="list-group-item list-group-item-action waves-effect">
+                    <i class="fas fa-users-cog mr-3"></i>Admin
                 </a>
                 {% endif %}
                 {% if user.is_authenticated %}
