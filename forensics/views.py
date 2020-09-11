@@ -176,7 +176,7 @@ def analysis_view(request, id, sig):
 def analysis_admin_view(request, id, sig):
     image = Image.objects.get(sig=sig)
     if request.method == "POST":
-        status = request.POST.get("status"):
+        status = request.POST.get("status")
         if status:
             if status == "default":
                 image.certified = 0
