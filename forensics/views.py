@@ -185,6 +185,7 @@ def analysis_admin_view(request, id, sig):
                 image.certified = 1
             else:
                 image.certified = 2
+            image.save()
 
     upload = image.image.url
     dirname = os.path.dirname(upload)
