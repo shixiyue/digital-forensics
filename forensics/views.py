@@ -152,10 +152,21 @@ def submission_admin_view(request, id):
     submission = Submission.objects.get(id=id)
     images = submission.images.all()
     num_cert = 0
+    in_progress = False
     if submission.status != 0:
         for image in images:
-            if image.status == 1:
+            if image.certified == 1:
                 num_cert += 1
+            elif image.certified == 0:
+                in_progress = True
+    if request.method == "POST":
+        if in_progress:
+            submission.status = 2
+        elif num_cert == len(images):
+            submission.status = 3
+        else:
+            submission.status = 4
+        submission.save()
     return render(
         request,
         "submission_admin.html",
