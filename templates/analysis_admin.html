@@ -16,7 +16,7 @@
             <span>/</span>
             <a href="{% url 'history' %}">History</a>
             <span>/</span>
-            <a href="{% url 'submission_details' id=id %}">Submission {{ id }}</a>
+            <a href="{% url 'submission_details' id=id %}">History {{ id }}</a>
             <span>/</span>
             <span>Image Analysis</span>
         </h4>
@@ -37,18 +37,20 @@
         </div>
     </div>
     <div class="row">
-        <div class="btn-group btn-group-toggle" data-toggle="buttons">
-            <label class="btn btn-primary active">
-              <input type="radio" name="options" id="default" autocomplete="off" checked> No Decision
-            </label>
-            <label class="btn btn-success">
-              <input type="radio" name="options" id="pass" autocomplete="off"> Pass
-            </label>
-            <label class="btn btn-danger">
-              <input type="radio" name="options" id="fail" autocomplete="off"> Fail
-            </label>
-        </div>
-        <button type="button" class="btn btn-light" id="done">Submit</button>
+        <form action="#" method="post">
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label class="btn btn-primary active">
+                <input type="radio" name="options" id="default" autocomplete="off" checked> No Decision
+                </label>
+                <label class="btn btn-success">
+                <input type="radio" name="options" id="pass" autocomplete="off"> Pass
+                </label>
+                <label class="btn btn-danger">
+                <input type="radio" name="options" id="fail" autocomplete="off"> Fail
+                </label>
+            </div>
+            <input type="submit" class="btn btn-light" id="done">Submit
+        </form>
     </div>
 </div>
 {% endblock %}
