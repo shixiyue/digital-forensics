@@ -175,6 +175,7 @@ def analysis_view(request, id, sig):
 @staff_member_required
 def analysis_admin_view(request, id, sig):
     image = Image.objects.get(sig=sig)
+    status = None
     if request.method == "POST":
         status = request.POST.get("status")
         if status:
@@ -193,7 +194,7 @@ def analysis_admin_view(request, id, sig):
     outputs.remove(upload)
 
     return render(
-        request, "analysis_admin.html", {"id": id, "upload": upload, "outputs": outputs}
+        request, "analysis_admin.html", {"id": id, "upload": upload, "outputs": outputs, "status": status}
     )
 
 
