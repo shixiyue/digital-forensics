@@ -73,5 +73,16 @@
         </div>
         {% endfor %}
     </div>
+    <div class="row">
+        <div class="card">
+            <div class="card-body">
+              {{ num_cert }} out of {{ total }} images are given certificates in this submission.
+              <form action="#" method="post">
+                {% csrf_token %}
+                <input type="submit" class="btn btn-primary" id="done" value="Submit">
+              </form>
+            </div>
+        </div>          
+    </div>
 </div>
 {% endblock %}

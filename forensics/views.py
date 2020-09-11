@@ -151,10 +151,15 @@ def submission_details_view(request, id):
 def submission_admin_view(request, id):
     submission = Submission.objects.get(id=id)
     images = submission.images.all()
+    num_cert = 0
+    if submission.stauts != 0:
+        for image in images:
+            if image.status == 1:
+                num_cert += 1
     return render(
         request,
         "submission_admin.html",
-        {"id": id, "submission": submission, "images": images},
+        {"id": id, "submission": submission, "images": images, "num_cert": num_cert, "total": len(images)},
     )
 
 
@@ -195,7 +200,7 @@ def analysis_admin_view(request, id, sig):
     outputs.remove(upload)
 
     return render(
-        request, "analysis_admin.html", {"id": id, "upload": upload, "outputs": outputs, "status": status}
+        request, "analysis_admin.html", {"id": id, "upload": upload, "outputs": outputs}
     )
 
 
