@@ -28,9 +28,10 @@ import hashlib
 
 from .forms import SignUpForm, LoginForm
 from .tokens import account_activation_token
-from .models import WebsiteUser, Image, Submission, SubmissionTable
+from .models import WebsiteUser, Image, Submission, SubmissionTable, SubmissionAdminTable
 from .serializers import ImageSerializer
 from .serializers import SubmissionSerializer
+from .mixin import StaffRequiredMixin
 from myproject.settings import PROJECT_ROOT
 
 
@@ -201,3 +202,11 @@ class HistoryView(LoginRequiredMixin, tables.SingleTableView):
 
     def get_queryset(self):
         return Submission.objects.filter(user=self.request.user).order_by("-id")
+
+class HistoryAdminView(StaffRequiredMixin, tables.SingleTableView):
+    login_url = "/login/"
+    table_class = SubmissionAdminTable
+    template_name = "admin.html"
+
+    def get_queryset(self):
+        return Submission.objects.order_by("-id")

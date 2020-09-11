@@ -115,6 +115,15 @@ class Submission(models.Model):
     def num_of_images(self):
         return self.images.count()
 
+    def email(self):
+        return self.user.email()
+    
+    def admin_email(self):
+        if self.admin is not None:
+            return self.admin.email()
+        else:
+            return "None"
+
 
 class SubmissionTable(tables.Table):
     id = tables.Column(verbose_name="Submission ID")
@@ -157,3 +166,33 @@ class SubmissionTable(tables.Table):
             "actions",
         )
         attrs = {"style": "background-color: #ffffff;"}
+
+class SubmissionAdminTable(tables.Table):
+    id = tables.Column(verbose_name="Submission ID")
+    submission_time = tables.DateTimeColumn(format="Y-m-d", verbose_name="Date")
+    num_of_images = tables.Column(
+        accessor=A("num_of_images"), verbose_name="Number of Images"
+    )
+    links = tables.LinkColumn(
+        "submission_details",
+        verbose_name="Analysis and Certificates",
+        text="Details",
+        args=[A("pk")],
+        attrs={"a": {"style": "color: #0275d8;"}},
+    )
+
+    class Meta:
+        model = Submission
+        template_name = "django_tables2/bootstrap4.html"
+        fields = ("id", "submission_time", "status")
+        sequence = (
+            "id",
+            "submission_time",
+            "email"
+            "status",
+            "num_of_images",
+            "admin_email",
+            "links",
+        )
+        attrs = {"style": "background-color: #ffffff;"}
+
