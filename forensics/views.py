@@ -166,7 +166,7 @@ def submission_admin_view(request, id):
             submission.status = 3
         else:
             submission.status = 4
-        submission.admin = request.user()
+        submission.admin = request.user
         submission.save()
     return render(
         request,
