@@ -141,8 +141,8 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+#MEDIA_URL = "/media/"
+#MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # celery
 CELERY_BROKER_URL = "redis://localhost:6379"
@@ -150,3 +150,10 @@ CELERY_RESULT_BACKEND = "redis://localhost:6379"
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_SERIALIZER = "json"
+
+# aws
+AWS_ACCESS_KEY_ID = 'AKIAZO2I5F3J4TOV5WUC'
+AWS_SECRET_ACCESS_KEY = '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'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_STORAGE_BUCKET_NAME = 'digitalforensics-uploads'
+AWS_S3_REGION_NAME = 'us-east-2'
