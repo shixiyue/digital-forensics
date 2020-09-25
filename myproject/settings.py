@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_extensions",
     "django_tables2",
+    "storages",
 ]
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # your size limit in bytes
