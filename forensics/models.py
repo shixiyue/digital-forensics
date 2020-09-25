@@ -61,9 +61,7 @@ def upload_file_name(instance, filename):
 class Image(models.Model):
     # use the custom storage class fo the FileField
     sig = models.CharField(max_length=64, primary_key=True)
-    image = models.ImageField(
-        upload_to=upload_file_name, storage=MediaFileSystemStorage()
-    )
+    image = models.FileField(upload_to=upload_file_name)
 
     class Status(models.IntegerChoices):
         DEFAULT = 0
