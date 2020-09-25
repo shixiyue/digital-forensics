@@ -161,4 +161,5 @@ STATICFILES_STORAGE = 'myproject.storage_backends.StaticStorage'
 STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_STATIC_LOCATION)
 
 AWS_MEDIA_LOCATION = 'media'
-DEFAULT_FILE_STORAGE = 'myproject.storage_backends.MediaStorage'  # <-- here is where we reference it
+MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_MEDIA_LOCATION)
+DEFAULT_FILE_STORAGE = 'myproject.storage_backends.MediaStorage'
