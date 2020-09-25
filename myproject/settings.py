@@ -135,13 +135,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
-
-STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "static/")
-
 #MEDIA_URL = "/media/"
 #MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
@@ -153,8 +146,19 @@ CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_SERIALIZER = "json"
 
 # aws
-AWS_ACCESS_KEY_ID = 'AKIAZO2I5F3J4TOV5WUC'
-AWS_SECRET_ACCESS_KEY = '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'
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-AWS_STORAGE_BUCKET_NAME = 'digitalforensics-uploads'
+AWS_ACCESS_KEY_ID = 'AKIAZO2I5F3JQOCMGFBS'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'digitalforensics'
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 AWS_S3_REGION_NAME = 'us-east-2'
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+
+AWS_DEFAULT_ACL = None
+AWS_STATIC_LOCATION = 'static'
+STATICFILES_STORAGE = 'myproject.storage_backends.StaticStorage'
+STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_STATIC_LOCATION)
+
+AWS_MEDIA_LOCATION = 'media'
+DEFAULT_FILE_STORAGE = 'myproject.storage_backends.MediaStorage'  # <-- here is where we reference it
