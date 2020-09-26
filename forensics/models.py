@@ -57,6 +57,8 @@ def upload_file_name(instance, filename):
     _, ext = os.path.splitext(filename)
     return os.path.join("uploads", instance.sig, "upload" + ext.lower())
 
+def analysis_file_name(instance, filename):
+    return os.path.join("uploads", instance.original_image, instance.filename)
 
 class Image(models.Model):
     # use the custom storage class fo the FileField
@@ -74,6 +76,11 @@ class Image(models.Model):
 
     def __str__(self):
         return self.sig
+
+class AnalysisImage(models.Model):
+    original_image = models.CharField(max_length=64)
+    filename = models.CharField(max_length=100)
+    image = models.FileField(upload_to=analysis_file_name)
 
 
 class Submission(models.Model):

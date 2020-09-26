@@ -13,6 +13,7 @@ from django.utils.http import urlsafe_base64_encode
 from django.template.loader import render_to_string
 from django.contrib import messages
 from django.core.files.base import File
+from django.core.files.storage import FileSystemStorage
 
 from rest_framework.parsers import FileUploadParser
 from rest_framework import permissions, renderers, viewsets, status
@@ -181,9 +182,9 @@ def analysis_view(request, id, sig):
     upload = image.image.url
     dirname = os.path.dirname(upload)
     outputs = []
-    for output in sorted(os.listdir(PROJECT_ROOT + dirname)):
-        outputs.append(os.path.join(dirname, output))
-    outputs.remove(upload)
+    #for output in sorted(os.listdir(PROJECT_ROOT + dirname)):
+        #outputs.append(os.path.join(dirname, output))
+    #outputs.remove(upload)
 
     return render(
         request, "analysis.html", {"id": id, "upload": upload, "outputs": outputs}
@@ -207,9 +208,9 @@ def analysis_admin_view(request, id, sig):
     upload = image.image.url
     dirname = os.path.dirname(upload)
     outputs = []
-    for output in sorted(os.listdir(PROJECT_ROOT + dirname)):
-        outputs.append(os.path.join(dirname, output))
-    outputs.remove(upload)
+    #for output in sorted(os.listdir(PROJECT_ROOT + dirname)):
+        #outputs.append(os.path.join(dirname, output))
+    #outputs.remove(upload)
 
     return render(
         request, "analysis_admin.html", {"id": id, "upload": upload, "outputs": outputs}
@@ -223,10 +224,10 @@ class SubmissionViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["post"])
     def submit(self, request):
+        print("hi")
         images = []
         request.data.pop("csrfmiddlewaretoken", None)
         try:
-            request.data.pop("apply")
             require_certificate = 1
         except:
             require_certificate = 0
@@ -238,6 +239,11 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             try:
                 image = Image.objects.get(sig=sig)
             except Image.DoesNotExist:
+                os.makedirs(PROJECT_ROOT + "/temp/" + sig)
+                with open(PROJECT_ROOT + "/temp/" + sig + "/upload.jpg", 'wb+') as f:
+                    for chunk in upload.chunks():
+                        f.write(chunk)
+                upload.seek(0)
                 image = Image.objects.create(image=upload, sig=sig)
                 image.save()
             images.append(image)

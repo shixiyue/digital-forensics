@@ -12,12 +12,16 @@ import matplotlib.cm as mplcm
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 from celery import shared_task
+from django.core.files.images import ImageFile
 
 from PIL import Image, ImageChops, ImageEnhance
 import sys
 import os
 import threading
 import argparse
+import io
+
+from .models import AnalysisImage
 
 import matplotlib
 
@@ -48,8 +52,7 @@ def ela(org_fname, dirname, quality=35):
     Adapted from:
     https://gist.github.com/cirocosta/33c758ad77e6e6531392
     """
-    tmp_fname = os.path.join(dirname, "tmp_ela.jpg")
-    ela_fname = os.path.join(dirname, "0-ela.png")
+    tmp_fname = os.path.join(os.path.dirname(org_fname), "tmp_ela.jpg")
 
     im = Image.open(org_fname)
     if im.mode == "RGBA":
@@ -67,7 +70,11 @@ def ela(org_fname, dirname, quality=35):
     scale = 255.0 / max_diff
     ela_im = ImageEnhance.Brightness(ela_im).enhance(scale)
 
-    ela_im.save(ela_fname)
+    figure = io.BytesIO()
+    ela_im.save(figure, format="PNG")
+    content_file = ImageFile(figure)
+    AnalysisImage.objects.create(image=content_file, original_image=dirname, filename="0-ela.png")
+
     os.remove(tmp_fname)
 
 
@@ -135,7 +142,11 @@ def draw_contours(target_overlay, contours, dirname, color=(255, 0, 0)):
     for idx, cnt in enumerate(contours):
         (x, y), _ = cv2.minEnclosingCircle(cnt)
         plt.annotate(f"{idx}", (x, y), color="cyan")
-    plt.savefig("{}/2-band_detection.png".format(dirname), bbox_inches="tight")
+    
+    figure = io.BytesIO()
+    plt.savefig(figure, format="png", bbox_inches="tight")
+    content_file = ImageFile(figure)
+    AnalysisImage.objects.create(image=content_file, original_image=dirname, filename="2-band_detection.png")
 
 
 def get_most_similar(df_matchDist, threshold=0.1):
@@ -162,7 +173,10 @@ def get_similar_bands(
 
     # plot clustermap of distances between contours
     g = sns.clustermap(data=df_matchDist, annot=True)
-    plt.savefig("{}/4-band_clusters.png".format(dirname), bbox_inches="tight")
+    figure = io.BytesIO()
+    plt.savefig(figure, format="png", bbox_inches="tight")
+    content_file = ImageFile(figure)
+    AnalysisImage.objects.create(image=content_file, original_image=dirname, filename="4-band_clusters.png")
 
     # filter for contours that are most similar
     close_contour_sets = get_most_similar(df_matchDist, 0.1)
@@ -227,14 +241,12 @@ def plot_colored_bands(sorted_idx, band_images, dirname):
             plt.imshow(apply_cmap(band_images[bid], cmap=mplcm.gist_rainbow))
         except TypeError:
             print("########### PROBLEM!:", bid, band_images[bid])
-
+    
     if dirname:
-        plt.savefig(
-            "{}/3-band_lineup{}.png".format(
-                dirname, "-".join(str(idx) for idx in idx_filtered)
-            ),
-            bbox_inches="tight",
-        )
+        figure = io.BytesIO()
+        plt.savefig(figure, format="png", bbox_inches="tight")
+        content_file = ImageFile(figure)
+        AnalysisImage.objects.create(image=content_file, original_image=dirname, filename="3-band_lineup{}.png".format("-".join(str(idx) for idx in idx_filtered)))
 
 
 def offset_image(coord, band_images, bid, ax, leaves):
@@ -358,14 +370,16 @@ def find_discontinuities(
     plt.gca().invert_yaxis()
 
     # save image
-    plt.savefig("{}/1-discontinuity_detection.png".format(dirname), bbox_inches="tight")
+    figure = io.BytesIO()
+    plt.savefig(figure, format="png", bbox_inches="tight")
+    content_file = ImageFile(figure)
+    AnalysisImage.objects.create(image=content_file, original_image=dirname, filename="1-discontinuity_detection.png")
 
 
 @shared_task
-def check_image(org_fname):
-    dirname = os.path.dirname(org_fname)
-    ela(org_fname, dirname, quality=35)
+def check_image(org_fname, sig):
+    ela(org_fname, sig, quality=35)
     try:
-        analyse_image(org_fname, dirname)
+        analyse_image(org_fname, sig)
     except Exception:
         traceback.print_exc()
