@@ -27,6 +27,13 @@ import matplotlib
 
 matplotlib.use("agg")
 
+has_init = False
+def init():
+    if has_init:
+        return
+    print("initializing")
+    has_init = True
+
 
 def flatten_rgba(im):
     """
@@ -378,8 +385,11 @@ def find_discontinuities(
 
 @shared_task
 def check_image(org_fname, sig):
+    init()
+    '''
     ela(org_fname, sig, quality=35)
     try:
         analyse_image(org_fname, sig)
     except Exception:
         traceback.print_exc()
+    '''
