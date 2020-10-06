@@ -5,8 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <link rel="icon" type="image/png" sizes="32x32"
-        href="https://www.tech.cornell.edu/wp-content/themes/cornell-tech/assets/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://s3.us-east-2.amazonaws.com/digitalforensics.report/ct_icon.png">
     <title>Digital Forensics</title>
     {% load static %}
     <!-- Font Awesome -->
@@ -24,8 +23,8 @@
     </style>
     <style type="text/css" id="jarallax-clip-0">
         #jarallax-container-0 {
-            clip: rect(0 1522.2222900390625px 767.1111450195312px 0);
-            clip: rect(0, 1522.2222900390625px, 767.1111450195312px, 0);
+            clip: rect(0 1922.2222900390625px 850.1111450195312px 0);
+            clip: rect(0, 1922.2222900390625px, 850.1111450195312px, 0);
         }
     </style>
 </head>
@@ -42,9 +41,7 @@
                 </a>
 
                 <!-- Collapse -->
-                <button class="navbar-toggler" type="button" data-toggle="collapse"
-                    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                    aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
@@ -61,8 +58,7 @@
                             <a class="nav-link waves-effect" href="{% url 'about' %}">Learn More</a>
                         </li>
                         <li class="nav-item">
-                            <a href="https://github.com" class="nav-link border border-light rounded waves-effect"
-                                target="_blank">
+                            <a href="https://github.com" class="nav-link border border-light rounded waves-effect" target="_blank">
                                 <i class="fab fa-github mr-2"></i>Source Code GitHub
                             </a>
                         </li>
@@ -71,36 +67,28 @@
             </div>
         </nav>
         <!-- Intro Section -->
-        <div id="home" class="view jarallax" data-jarallax="{&quot;speed&quot;: 0.2}"
-            style="background-image: none; background-repeat: no-repeat; background-size: cover; background-position: center center; z-index: 0;"
-            data-jarallax-original-styles="background-image: url(&#39;https://tech.cornell.edu/wp-content/uploads/2018/06/visit-us-thumbnail-360-1440x1166.jpg&#39;); background-repeat: no-repeat; background-size: cover; background-position: center center;">
+        <div id="home" class="view jarallax" data-jarallax="{&quot;speed&quot;: 0.2}" style="background-image: none; background-repeat: no-repeat; background-size: cover; background-position: center center; z-index: 0;" data-jarallax-original-styles="background-image: url(&#39;https://s3.us-east-2.amazonaws.com/digitalforensics.report/index_background.jpg&#39;); background-repeat: no-repeat; background-size: cover; background-position: center center;">
             <div class="mask rgba-black-strong">
                 <div class="container h-100 d-flex justify-content-center align-items-center">
                     <div class="row smooth-scroll">
                         <div class="col-md-12 white-text text-center">
-                            <div class="wow fadeInDown" data-wow-delay="0.2s"
-                                style="visibility: visible; animation-name: fadeInDown; animation-delay: 0.2s;">
+                            <div class="wow fadeInDown" data-wow-delay="0.2s" style="visibility: visible; animation-name: fadeInDown; animation-delay: 0.2s;">
                                 <h2 class="display-3 font-weight-bold mb-2">Digital Forensics</h2>
                                 <hr class="hr-light">
-                                <h3 class="subtext-header mt-4 mb-5"> A joint specialization project by Cornell Tech and
-                                    Weill Cornell Medicine started in Feburary 2020
+                                <h3 class="subtext-header mt-4 mb-5"> A joint specialization project by Cornell Tech and Weill Cornell Medicine started in Feburary 2020
                                 </h3>
                             </div>
                             {% if user.is_authenticated %}
                             <a class="btn btn-success" href="{% url 'dashboard' %}">Dashboard</a>
-                            <a class="btn btn-danger" href="{% url 'logout' %}">Logout</a>
-                            {% else %}
+                            <a class="btn btn-danger" href="{% url 'logout' %}">Logout</a> {% else %}
                             <a class="btn btn-info" href="{% url 'login' %}">Login</a>
-                            <a class="btn btn-warning" href="{% url 'signup' %}">Sign Up</a>
-                            {% endif %}
+                            <a class="btn btn-warning" href="{% url 'signup' %}">Sign Up</a> {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
-            <div id="jarallax-container-0"
-                style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; overflow: hidden; pointer-events: none; z-index: -100;">
-                <div
-                    style="background-position: 50% 50%; background-size: cover; background-repeat: no-repeat; background-image: url(&quot;https://tech.cornell.edu/wp-content/uploads/2018/06/visit-us-thumbnail-360-1440x1166.jpg&quot;); position: fixed; top: 0px; left: 0px; width: 1522.22px; height: 767.2px; overflow: hidden; pointer-events: none; margin-top: -0.100031px; transform: translate3d(0px, 0.0111145px, 0px);">
+            <div id="jarallax-container-0" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; overflow: hidden; pointer-events: none; z-index: -100;">
+                <div style="background-position: 50% 50%; background-size: cover; background-repeat: no-repeat; background-image: url(&quot;https://s3.us-east-2.amazonaws.com/digitalforensics.report/index_background.jpg&quot;); position: fixed; top: 0px; left: 0px; width: 1922.22px; height: 850.2px; overflow: hidden; pointer-events: none; margin-top: -0.100031px; transform: translate3d(0px, 0.0111145px, 0px);">
                 </div>
             </div>
         </div>
@@ -118,45 +106,34 @@
             <section id="about" class="mt-4 mb-2">
 
                 <!--Secion heading-->
-                <h2 class="text-center my-5 font-weight-bold wow fadeIn" data-wow-delay="0.2s"
-                    style="visibility: visible; animation-name: fadeIn; animation-delay: 0.2s;">About Digital Forensics
-                    Project</h2>
+                <h2 class="text-center my-5 font-weight-bold wow fadeIn" data-wow-delay="0.2s" style="visibility: visible; animation-name: fadeIn; animation-delay: 0.2s;">About Digital Forensics Project
+                </h2>
 
                 <!--First row-->
                 <div class="row">
 
                     <!--First column-->
-                    <div class="col-lg-5 col-md-12 mb-5 pb-4 wow fadeIn" data-wow-delay="0.4s"
-                        style="visibility: visible; animation-name: fadeIn; animation-delay: 0.4s;">
+                    <div class="col-lg-5 col-md-12 mb-5 pb-4 wow fadeIn" data-wow-delay="0.4s" style="visibility: visible; animation-name: fadeIn; animation-delay: 0.4s;">
 
                         <!--Image-->
-                        <img src="https://tech.cornell.edu/wp-content/uploads/2018/06/TECH_20170418_001_1440_1080_s_c1.jpg"
-                            class="img-fluid z-depth-1 rounded">
+                        <img src="https://s3.us-east-2.amazonaws.com/digitalforensics.report/index_campus_image.jpg" class="img-fluid z-depth-1 rounded">
 
                     </div>
                     <!--First column-->
 
                     <!--Second column-->
-                    <div class="col-lg-6 dark-grey-text ml-lg-auto col-md-12 wow fadeIn" data-wow-delay="0.4s"
-                        style="visibility: visible; animation-name: fadeIn; animation-delay: 0.4s;">
+                    <div class="col-lg-6 dark-grey-text ml-lg-auto col-md-12 wow fadeIn" data-wow-delay="0.4s" style="visibility: visible; animation-name: fadeIn; animation-delay: 0.4s;">
 
                         <!--Description-->
-                        <p align="justify">WCM researchers have an increasing need to analyze digital images to detect
-                            prior manipulations.
+                        <p align="justify">WCM researchers have an increasing need to analyze digital images to detect prior manipulations.
                         </p>
 
-                        <p align="justify">Cornell Tech students are trying to turn this into a more automated product
-                            that could be incrementally improved and commercialized for many industries.
+                        <p align="justify">Cornell Tech students are trying to turn this into a more automated product that could be incrementally improved and commercialized for many industries.
                         </p>
 
-                        <p align="justify">As the problem of image fraud in research papers has become increasingly
-                            concerning to the scientific community, we propose to build a website for automatic image
-                            manipulation detection. In this work, we conduct user studies to
-                            understand desired features that the website should support and research on technical
-                            approaches to build an image processing website with an efficient data storage system. So
-                            far, we have implemented most of these functionalities
-                            and deployed our website. We will continue to work on the website and improve the
-                            manipulation detection algorithm next semester.
+                        <p align="justify">As the problem of image fraud in research papers has become increasingly concerning to the scientific community, we propose to build a website for automatic image manipulation detection. In this work, we conduct user studies to
+                            understand desired features that the website should support and research on technical approaches to build an image processing website with an efficient data storage system. So far, we have implemented most of these functionalities
+                            and deployed our website. We will continue to work on the website and improve the manipulation detection algorithm next semester.
 
                         </p>
 
@@ -171,8 +148,7 @@
         </div>
     </main>
     <!--Footer-->
-    <footer class="page-footer text-center font-small primary-color-dark darken-2 mt-4 wow fadeIn"
-        style="visibility: visible; animation-name: fadeIn;">
+    <footer class="page-footer text-center font-small primary-color-dark darken-2 mt-4 wow fadeIn" style="visibility: visible; animation-name: fadeIn;">
 
         <!--Copyright-->
         <div class="footer-copyright py-3">
@@ -200,12 +176,12 @@
         new WOW().init();
 
         //Modal
-        $('#myModal').on('shown.bs.modal', function () {
+        $('#myModal').on('shown.bs.modal', function() {
             $('#myInput').focus()
         })
 
         // Material Select Initialization
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('.mdb-select').materialSelect();
         });
     </script>
