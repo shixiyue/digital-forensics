@@ -30,7 +30,8 @@ import hashlib
 
 from .forms import SignUpForm, LoginForm
 from .tokens import account_activation_token
-from .models import WebsiteUser, Image, Submission, SubmissionTable, SubmissionAdminTable
+from .models import WebsiteUser, Image, Submission
+from .tables import SubmissionTable, SubmissionAdminTable
 from .serializers import ImageSerializer
 from .serializers import SubmissionSerializer
 from .mixin import StaffRequiredMixin
@@ -224,7 +225,6 @@ class SubmissionViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["post"])
     def submit(self, request):
-        print("hi")
         images = []
         request.data.pop("csrfmiddlewaretoken", None)
         try:

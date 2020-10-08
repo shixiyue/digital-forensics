@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractUser
-from utils import upload_file_name, analysis_file_name, crop_file_name
+from .utils import upload_file_name, analysis_file_name, crop_file_name
 
 class WebsiteUserManager(BaseUserManager):
     def create_superuser(self, email, password):
