@@ -26,29 +26,25 @@ import django_tables2 as tables
 
 import io
 import os
-import hashlib
+import uuid
 
 from .forms import SignUpForm, LoginForm
 from .tokens import account_activation_token
-from .models import WebsiteUser, Image, Submission
+from .models import WebsiteUser, Image, Submission, Crop
 from .tables import SubmissionTable, SubmissionAdminTable
 from .serializers import ImageSerializer
 from .serializers import SubmissionSerializer
 from .mixin import StaffRequiredMixin
 from myproject.settings import PROJECT_ROOT
 
-
 def index_view(request):
     return render(request, "index.html")
-
 
 def about_view(request):
     return render(request, "about.html")
 
-
 def certificate_demo(request):
     return render(request, "certificate.html")
-
 
 def signup_view(request):
     if request.user.is_authenticated:
@@ -83,10 +79,8 @@ def signup_view(request):
         form = SignUpForm()
     return render(request, "signup.html", {"form": form})
 
-
 def activation_sent_view(request):
     return render(request, "activation_sent.html")
-
 
 def activate(request, uidb64, token):
     try:
@@ -103,7 +97,6 @@ def activate(request, uidb64, token):
         return redirect("index")
     else:
         return render(request, "activation_invalid.html")
-
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -127,32 +120,35 @@ def login_view(request):
         form = LoginForm()
     return render(request, "login.html", {"form": form})
 
-
 @login_required(login_url="/login/")
 def logout_view(request):
     logout(request)
     return render(request, "index.html")
 
-
 @login_required(login_url="/login/")
 def dashboard_view(request):
     return render(request, "dashboard.html")
 
-
 @login_required(login_url="/login/")
 def submission_details_view(request, id):
     submission = Submission.objects.get(id=id)
-    images = submission.images.all()
+    images = list(Image.objects.filter(submission=submission.id))
+    crops = []
+    for image in images:
+        crops.append((image, list(Crop.objects.filter(original_image=image.id))))
     return render(
         request,
         "submission_details.html",
-        {"id": id, "submission": submission, "images": images},
+        {"id": id, "submission": submission, "crops": crops},
     )
 
 @staff_member_required
 def submission_admin_view(request, id):
     submission = Submission.objects.get(id=id)
-    images = submission.images.all()
+    images = list(Image.objects.filter(submission=submission.id))
+    crops = []
+    for image in images:
+        crops.append((image, list(Crop.objects.filter(original_image=image.id))))
     num_cert = 0
     in_progress = False
     if submission.status != 0:
@@ -173,40 +169,39 @@ def submission_admin_view(request, id):
     return render(
         request,
         "submission_admin.html",
-        {"id": id, "submission": submission, "images": images, "num_cert": num_cert, "total": len(images)},
+        {"id": id, "submission": submission, "crops": crops, "num_cert": num_cert, "total": len(images)},
     )
 
-
 @login_required(login_url="/login/")
-def analysis_view(request, id, sig):
-    image = Image.objects.get(sig=sig)
-    upload = image.image.url
-    dirname = os.path.dirname(upload)
+def analysis_view(request, sub_id, crop_id):
+    crop = Crop.objects.get(id=crop_id)
+    upload = crop.image.url
     outputs = []
     #for output in sorted(os.listdir(PROJECT_ROOT + dirname)):
         #outputs.append(os.path.join(dirname, output))
     #outputs.remove(upload)
 
     return render(
-        request, "analysis.html", {"id": id, "upload": upload, "outputs": outputs}
+        request, "analysis.html", {"id": sub_id, "upload": upload, "outputs": outputs}
     )
 
 @staff_member_required
-def analysis_admin_view(request, id, sig):
-    image = Image.objects.get(sig=sig)
+def analysis_admin_view(request, sub_id, crop_id):
+    crop = Crop.objects.get(sig=crop_id)
     status = None
     if request.method == "POST":
         status = request.POST.get("status")
         if status:
             if status == "default":
-                image.certified = 0
+                crop.certified = 0
             elif status == "pass":
-                image.certified = 1
+                crop.certified = 1
             else:
-                image.certified = 2
-            image.save()
+                crop.certified = 2
+            crop.save()
+            # TODO: cascade to image certified status
 
-    upload = image.image.url
+    upload = crop.image.url
     dirname = os.path.dirname(upload)
     outputs = []
     #for output in sorted(os.listdir(PROJECT_ROOT + dirname)):
@@ -216,7 +211,6 @@ def analysis_admin_view(request, id, sig):
     return render(
         request, "analysis_admin.html", {"id": id, "upload": upload, "outputs": outputs}
     )
-
 
 class SubmissionViewSet(viewsets.ModelViewSet):
     queryset = Submission.objects.all()
@@ -232,20 +226,17 @@ class SubmissionViewSet(viewsets.ModelViewSet):
         except:
             require_certificate = 0
         for upload in request.data.values():
-            sha = hashlib.sha256()
-            for chunk in upload.chunks():
-                sha.update(chunk)
-            sig = sha.hexdigest()
-            try:
-                image = Image.objects.get(sig=sig)
-            except Image.DoesNotExist:
-                os.makedirs(PROJECT_ROOT + "/temp/" + sig)
-                with open(PROJECT_ROOT + "/temp/" + sig + "/upload.jpg", 'wb+') as f:
-                    for chunk in upload.chunks():
-                        f.write(chunk)
-                upload.seek(0)
-                image = Image.objects.create(image=upload, sig=sig)
-                image.save()
+            uid = str(uuid.uuid4())
+            os.makedirs(PROJECT_ROOT + "/temp/" + uid)
+            with open(PROJECT_ROOT + "/temp/" + uid + "/upload.jpg", 'wb+') as f:
+                for chunk in upload.chunks():
+                    f.write(chunk)
+            upload.seek(0)
+            image = Image.objects.create(image=upload)
+            image.save()
+            # TODO: crop
+            crop = Crop.object.create(original_image=image, image=upload)
+            crop.save()
             images.append(image)
         serializer = SubmissionSerializer(data={"status": require_certificate})
         if serializer.is_valid():
@@ -253,7 +244,6 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class HistoryView(LoginRequiredMixin, tables.SingleTableView):
     login_url = "/login/"

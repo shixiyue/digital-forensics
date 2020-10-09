@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractUser
+import uuid
+
 from .utils import upload_file_name, analysis_file_name, crop_file_name
 
 class WebsiteUserManager(BaseUserManager):
@@ -32,6 +34,7 @@ class WebsiteUser(AbstractUser):
     REQUIRED_FIELDS = []
 
 class Submission(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(
         WebsiteUser, models.SET_NULL, null=True, related_name="user"
     )
@@ -59,7 +62,7 @@ class Submission(models.Model):
     )
 
     class Meta:
-        ordering = ["submission_time"]
+        ordering = ["-submission_time"]
 
     def __str__(self):
         return self.user.email + "_" + str(self.submission_time)
@@ -88,11 +91,20 @@ class Image(models.Model):
     certified = models.IntegerField(choices=ImageStatus.choices, default=0)
     certificate_link = models.URLField(blank=True)
 
+    def __str__(self):
+        return '%s_%d' % (self.submission.id, self.id)
+
 class Crop(models.Model):
     original_image = models.ForeignKey(Image, on_delete=models.CASCADE)
     image = models.FileField(upload_to=crop_file_name)
     certified = models.IntegerField(choices=ImageStatus.choices, default=0)
 
+    def __str__(self):
+        return '%s_%d' % (self.original_image, self.id)
+
 class AnalysisImage(models.Model):
     crop = models.ForeignKey(Crop, on_delete=models.CASCADE)
     image = models.FileField(upload_to=analysis_file_name)
+
+    def __str__(self):
+        return '%s_%d' % (self.crop, self.id)

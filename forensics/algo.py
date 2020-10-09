@@ -384,6 +384,12 @@ def find_discontinuities(
 
 
 @shared_task
+def auto_crop():
+    # TODO: load model only once
+    # https://medium.com/@brianschmidt_78145/a-task-queue-ml-model-deployment-552d2ceb38a5
+    pass
+
+@shared_task
 def check_image(org_fname, sig):
     init()
     '''
