@@ -13,7 +13,7 @@ class CropSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class ImageSerializer(serializers.ModelSerializer):
-    crops = CropSerializer(many=True, read_only=True, Required=False)
+    crops = CropSerializer(many=True, read_only=True, required=False)
     class Meta:
         model = Image
         fields = "__all__"
