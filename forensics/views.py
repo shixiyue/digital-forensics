@@ -185,7 +185,7 @@ def analysis_view(request, sub_id, crop_id):
     #outputs.remove(upload)
 
     return render(
-        request, "analysis.html", {"id": sub_id, "upload": upload, "outputs": outputs}
+        request, "analysis.html", {"sub_id": sub_id, "upload": upload, "outputs": outputs}
     )
 
 @staff_member_required
@@ -212,7 +212,7 @@ def analysis_admin_view(request, sub_id, crop_id):
     #outputs.remove(upload)
 
     return render(
-        request, "analysis_admin.html", {"id": id, "upload": upload, "outputs": outputs}
+        request, "analysis_admin.html", {"sub_id": sub_id, "upload": upload, "outputs": outputs}
     )
 
 class SubmissionViewSet(viewsets.ModelViewSet):
