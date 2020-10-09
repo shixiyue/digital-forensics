@@ -135,10 +135,10 @@ def dashboard_view(request):
 @login_required(login_url="/login/")
 def submission_details_view(request, id):
     submission = Submission.objects.get(id=id)
-    images = list(Image.objects.filter(submission=submission.id))
+    images = list(Image.objects.filter(submission=submission.id).order_by("id"))
     crops = []
     for image in images:
-        crops.append(list(Crop.objects.filter(original_image=image.id)))
+        crops.append(list(Crop.objects.filter(original_image=image.id).order_by("id")))
     return render(
         request,
         "submission_details.html",
@@ -148,10 +148,10 @@ def submission_details_view(request, id):
 @staff_member_required
 def submission_admin_view(request, id):
     submission = Submission.objects.get(id=id)
-    images = list(Image.objects.filter(submission=submission.id))
+    images = list(Image.objects.filter(submission=submission.id).order_by("id"))
     crops = []
     for image in images:
-        crops.append(list(Crop.objects.filter(original_image=image.id)))
+        crops.append(list(Crop.objects.filter(original_image=image.id).order_by("id")))
     num_cert = 0
     in_progress = False
     if submission.status != 0:
