@@ -34,7 +34,6 @@ class WebsiteUser(AbstractUser):
     REQUIRED_FIELDS = []
 
 class Submission(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(
         WebsiteUser, models.SET_NULL, null=True, related_name="user"
     )

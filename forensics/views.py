@@ -28,6 +28,8 @@ import django_tables2 as tables
 import io
 import os
 import uuid
+import subprocess
+import shlex
 
 from .forms import SignUpForm, LoginForm
 from .tokens import account_activation_token
@@ -136,7 +138,7 @@ def submission_details_view(request, id):
     images = list(Image.objects.filter(submission=submission.id))
     crops = []
     for image in images:
-        crops.append((image, list(Crop.objects.filter(original_image=image.id))))
+        crops.append(list(Crop.objects.filter(original_image=image.id)))
     return render(
         request,
         "submission_details.html",
@@ -149,7 +151,7 @@ def submission_admin_view(request, id):
     images = list(Image.objects.filter(submission=submission.id))
     crops = []
     for image in images:
-        crops.append((image, list(Crop.objects.filter(original_image=image.id))))
+        crops.append(list(Crop.objects.filter(original_image=image.id)))
     num_cert = 0
     in_progress = False
     if submission.status != 0:
@@ -227,20 +229,39 @@ class SubmissionViewSet(viewsets.ModelViewSet):
         except:
             require_certificate = 0
         submission = Submission.objects.create(user=request.user, status=require_certificate)
-        for upload in request.data.values():
+        if 'pdf' in request.data:
+            upload = request.data['pdf']
             uid = str(uuid.uuid4())
-            os.makedirs(PROJECT_ROOT + "/temp/" + uid)
-            with open(PROJECT_ROOT + "/temp/" + uid + "/upload.jpg", 'wb+') as f:
+            dirname = PROJECT_ROOT + "/temp/" + uid
+            os.makedirs(dirname)
+            with open(dirname + "/upload.pdf", 'wb+') as f:
                 for chunk in upload.chunks():
                     f.write(chunk)
-            upload.seek(0)
-            image = Image.objects.create(submission=submission, image=upload)
-            image.save()
-            # TODO: crop
-            crop_img = open(PROJECT_ROOT + "/temp/" + uid + "/upload.jpg", "rb")
-            crop = Crop.objects.create(original_image=image, image=File(crop_img))
-            crop.save()
-            return HttpResponse(status=201)
+            subprocess.call(shlex.split('/home/ubuntu/myprojectdir/extract.sh {}'.format(dirname)))
+            for output in sorted(os.listdir(dirname)):
+                f = open(os.path.join(dirname, output), "rb")
+                image = Image.objects.create(submission=submission, image=File(f))
+                image.save()
+                # TODO: crop
+                f = open(os.path.join(dirname, output), "rb")
+                crop = Crop.objects.create(original_image=image, image=File(f))
+                crop.save()
+        else:
+            for upload in request.data.values():
+                uid = str(uuid.uuid4())
+                dirname = PROJECT_ROOT + "/temp/" + uid
+                os.makedirs(dirname)
+                with open(PROJECT_ROOT + "/temp/" + uid + "/upload.jpg", 'wb+') as f:
+                    for chunk in upload.chunks():
+                        f.write(chunk)
+                upload.seek(0)
+                image = Image.objects.create(submission=submission, image=upload)
+                image.save()
+                # TODO: crop
+                crop_img = open(PROJECT_ROOT + "/temp/" + uid + "/upload.jpg", "rb")
+                crop = Crop.objects.create(original_image=image, image=File(crop_img))
+                crop.save()
+        return HttpResponse(status=201)
 
 class HistoryView(LoginRequiredMixin, tables.SingleTableView):
     login_url = "/login/"
