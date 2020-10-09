@@ -68,7 +68,7 @@ class Submission(models.Model):
         return self.user.email + "_" + str(self.submission_time)
 
     def num_of_images(self):
-        return Image.objects.filter(submission=self.id)
+        return Image.objects.filter(submission=self.id).count()
 
     def email(self):
         return self.user.email

@@ -2,6 +2,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_text
@@ -225,6 +226,7 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             require_certificate = 1
         except:
             require_certificate = 0
+        submission = Submission.objects.create(user=request.user, status=require_certificate)
         for upload in request.data.values():
             uid = str(uuid.uuid4())
             os.makedirs(PROJECT_ROOT + "/temp/" + uid)
@@ -232,18 +234,13 @@ class SubmissionViewSet(viewsets.ModelViewSet):
                 for chunk in upload.chunks():
                     f.write(chunk)
             upload.seek(0)
-            image = Image.objects.create(image=upload)
+            image = Image.objects.create(submission=submission, image=upload)
             image.save()
             # TODO: crop
-            crop = Crop.object.create(original_image=image, image=upload)
+            crop_img = open(PROJECT_ROOT + "/temp/" + uid + "/upload.jpg", "rb")
+            crop = Crop.objects.create(original_image=image, image=File(crop_img))
             crop.save()
-            images.append(image)
-        serializer = SubmissionSerializer(data={"status": require_certificate})
-        if serializer.is_valid():
-            serializer.save(images=images, user=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return HttpResponse(status=201)
 
 class HistoryView(LoginRequiredMixin, tables.SingleTableView):
     login_url = "/login/"
