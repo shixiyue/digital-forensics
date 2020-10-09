@@ -46,13 +46,13 @@
                 <div class="row">
                     <div class="col-md-6">
                         {% if submission.status == 0 %}
-                        <a href="{% url 'analysis' sub_id=id img_id=i.id %}" class="btn btn-light btn-sm" role="button"
+                        <a href="{% url 'analysis' sub_id=id crop_id=i.id %}" class="btn btn-light btn-sm" role="button"
                             style="font-size: 13px;">View Analysis</a>
                         {% elif i.certified == 0 %}
-                        <a href="{% url 'analysis_admin' sub_id=id img_id=i.id %}" class="btn btn-light btn-sm"
+                        <a href="{% url 'analysis_admin' sub_id=id crop_id=i.id %}" class="btn btn-light btn-sm"
                             role="button" style="font-size: 13px;">Process</a>
                         {% else %}
-                        <a href="{% url 'analysis_admin' sub_id=id img_id=i.id %}" class="btn btn-light btn-sm"
+                        <a href="{% url 'analysis_admin' sub_id=id crop_id=i.id %}" class="btn btn-light btn-sm"
                             role="button" style="font-size: 13px;">Reprocess</a>
                         {% endif %}
                         </a>
