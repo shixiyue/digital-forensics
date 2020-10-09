@@ -11,7 +11,7 @@ def _get_analysis(instance):
 
 def upload_file_name(instance, filename):
     _, ext = os.path.splitext(filename)
-    return os.path.join(_get_upload(instance.id), "upload" + ext.lower())
+    return os.path.join(_get_upload(instance), "upload" + ext.lower())
 
 def crop_file_name(instance, filename):
     _, ext = os.path.splitext(filename)
