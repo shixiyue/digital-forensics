@@ -2,6 +2,7 @@
 import numpy as np
 import os, cv2
 import matplotlib.pyplot as plt
+import time
 
 # import some common detectron2 utilities
 from detectron2 import model_zoo
@@ -66,6 +67,10 @@ class CroppingModel():
         print(img_name)
         # Load image
         img = cv2.imread(img_name)
+        if img is None:
+            time.sleep(1)
+            img = cv2.imread(img_name)
+
         # Make prediction
         outputs = self.predictor(img)
         # Store all medical boxes (class 0)
