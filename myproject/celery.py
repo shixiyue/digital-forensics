@@ -9,6 +9,6 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "myproject.settings")
 registry = TaskRegistry()
 registry.register(CroppingModelPredictionTask())
 
-celery_app = Celery("myproject", task=registry)
+celery_app = Celery("myproject", tasks=registry)
 celery_app.config_from_object("django.conf:settings", namespace="CELERY")
 celery_app.autodiscover_tasks()
