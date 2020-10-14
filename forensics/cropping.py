@@ -11,6 +11,10 @@ from detectron2.config import get_cfg
 from detectron2.utils.visualizer import Visualizer
 from detectron2.utils.visualizer import ColorMode
 
+from django.core.files.base import File
+
+from .models import Image, Crop
+
 class CroppingModel():
     def __init__(self, model_weights_location, cpu_only = True, model_type = "COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml", threshold = 0.65):
         self.cfg = get_cfg()
@@ -59,20 +63,25 @@ class CroppingModel():
             cv2.imwrite(save_image_path, out.get_image()[:, :, ::-1])
     
     # Function that gets medical image boxes results in format [[x0, y0, x1, y1], ...]
-    def medical_bounding_boxes(self, img):
+    def medical_bounding_boxes(self, img_id, img):
         # Load image or just use image
         if isinstance(img, str):
             img = cv2.imread(img)
         # Make prediction
         outputs = self.predictor(img)
         # Store all medical boxes (class 0)
-        all_medical_boxes = []
+        medical_boxes = []
         classes = outputs['instances'].to("cpu").pred_classes.numpy().astype(int)
         for i in range(len(classes)):
             if classes[i] == 0:
-                all_medical_boxes.append(outputs['instances']._fields['pred_boxes'].to("cpu")[i].__dict__['tensor'][0].numpy().astype(int))
-        print(all_medical_boxes)
-        return all_medical_boxes
+                medical_boxes.append(outputs['instances']._fields['pred_boxes'].to("cpu")[i].__dict__['tensor'][0].numpy().astype(int))
+        for box in medical_boxes:
+            for x0, y0, x1, y1 in box:
+                crop_img = img[y0:y1, x0:x1]
+                crop = Crop.objects.create(original_image=Image.objects.get(id=img_id), 
+                                           image=File(crop_img))
+                crop.save()
+            
     
     # Function that gets medical image boxes results in format [[type, [x0, y0, x1, y1]], ...]
     def all_bounding_boxes(self, img):

@@ -14,4 +14,4 @@ def run_cropping_script(sender, instance, created, **kwargs):
     if created:
         task = celery_app.tasks["cropping"]
         img = f"{PROJECT_ROOT}/temp/{instance.submission.id}/{instance.id}.jpg"
-        task.delay(img)
+        task.delay(instance.id, img)

@@ -244,10 +244,6 @@ class SubmissionViewSet(viewsets.ModelViewSet):
                 new_name = os.path.join(dirname, f"{image.id}.jpg")
                 os.rename(file_name, new_name)
                 image.save()
-                # TODO: crop
-                f = open(os.path.join(dirname, new_name), "rb")
-                crop = Crop.objects.create(original_image=image, image=File(f))
-                crop.save()
         else:
             for i, upload in enumerate(request.data.values()):
                 with open(os.path.join(dirname, str(i) + ".jpg", 'wb+')) as f:
@@ -256,10 +252,6 @@ class SubmissionViewSet(viewsets.ModelViewSet):
                 upload.seek(0)
                 image = Image.objects.create(submission=submission, image=upload)
                 image.save()
-                # TODO: crop
-                crop_img = open(PROJECT_ROOT + "/temp/" + i + ".jpg", "rb")
-                crop = Crop.objects.create(original_image=image, image=File(crop_img))
-                crop.save()
         return HttpResponse(status=201)
 
 class HistoryView(LoginRequiredMixin, tables.SingleTableView):

@@ -2,7 +2,7 @@
 import importlib
 from celery import Task
 
-from .cropping import CroppingModel
+from forensics.cropping import CroppingModel
 from django.conf import settings
 
 class CroppingModelPredictionTask(Task):
@@ -19,8 +19,8 @@ class CroppingModelPredictionTask(Task):
         model_object = CroppingModel(settings.CROPPING_MODEL)
         self._model = model_object
 
-    def run(self, img):
+    def run(self, img_id, img):
         """Execute predictions with the MLModel class."""
         if self._model is None:
             self.initialize()
-        return self._model.medical_bounding_boxes(img)
+        return self._model.medical_bounding_boxes(img_id, img)
