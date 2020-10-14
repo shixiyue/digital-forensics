@@ -13,8 +13,6 @@ from detectron2.utils.visualizer import ColorMode
 
 from django.core.files.base import File
 
-from .models import Image, Crop
-
 class CroppingModel():
     def __init__(self, model_weights_location, cpu_only = True, model_type = "COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml", threshold = 0.65):
         self.cfg = get_cfg()
@@ -64,6 +62,8 @@ class CroppingModel():
     
     # Function that gets medical image boxes results in format [[x0, y0, x1, y1], ...]
     def medical_bounding_boxes(self, img_id, img):
+        from .models import Image, Crop
+
         # Load image or just use image
         if isinstance(img, str):
             img = cv2.imread(img)
