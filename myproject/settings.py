@@ -163,3 +163,6 @@ STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_STATIC_LOCATION)
 AWS_MEDIA_LOCATION = 'media'
 MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_MEDIA_LOCATION)
 DEFAULT_FILE_STORAGE = 'myproject.storage_backends.MediaStorage'
+
+MODELS_DIR = PROJECT_ROOT + "/models/"
+CROPPING_MODEL = MODELS_DIR + "cropping_model.pth"

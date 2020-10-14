@@ -6,13 +6,12 @@ import os
 from .algo import check_image
 from .models import Image
 from myproject.settings import PROJECT_ROOT
+from myproject.celery import app
 
 
 @receiver(post_save, sender=Image)
-def run_detection_script(sender, instance, created, **kwargs):
-    pass
-    '''
+def run_cropping_script(sender, instance, created, **kwargs):
     if created:
-        image_dir = PROJECT_ROOT + "/temp/" + instance.sig + "/upload.jpg"
-        check_image.delay(image_dir, instance.sig)
-    '''
+        task = app.tasks["cropping"]
+        img = f"{PROJECT_ROOT}/temp/{instance.submission.id}/{instance.id}.jpg"
+        task.delay(img)

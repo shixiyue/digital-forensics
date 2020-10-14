@@ -229,36 +229,35 @@ class SubmissionViewSet(viewsets.ModelViewSet):
         except:
             require_certificate = 0
         submission = Submission.objects.create(user=request.user, status=require_certificate)
+        dirname = PROJECT_ROOT + "/temp/" + submission.id
+        os.makedirs(dirname)
         if 'pdf' in request.data:
             upload = request.data['pdf']
-            uid = str(uuid.uuid4())
-            dirname = PROJECT_ROOT + "/temp/" + uid
-            os.makedirs(dirname)
             with open(dirname + "/upload.pdf", 'wb+') as f:
                 for chunk in upload.chunks():
                     f.write(chunk)
             subprocess.call(shlex.split('/home/ubuntu/myprojectdir/extract.sh {}'.format(dirname)))
             for output in sorted(os.listdir(dirname)):
-                f = open(os.path.join(dirname, output), "rb")
+                file_name = os.path.join(dirname, output)
+                f = open(file_name, "rb")
                 image = Image.objects.create(submission=submission, image=File(f))
+                new_name = os.path.join(dirname, f"{image.id}.jpg")
+                os.rename(file_name, new_name)
                 image.save()
                 # TODO: crop
                 f = open(os.path.join(dirname, output), "rb")
                 crop = Crop.objects.create(original_image=image, image=File(f))
                 crop.save()
         else:
-            for upload in request.data.values():
-                uid = str(uuid.uuid4())
-                dirname = PROJECT_ROOT + "/temp/" + uid
-                os.makedirs(dirname)
-                with open(PROJECT_ROOT + "/temp/" + uid + "/upload.jpg", 'wb+') as f:
+            for i, upload in enumerate(request.data.values()):
+                with open(PROJECT_ROOT + "/temp/" + i + ".jpg", 'wb+') as f:
                     for chunk in upload.chunks():
                         f.write(chunk)
                 upload.seek(0)
                 image = Image.objects.create(submission=submission, image=upload)
                 image.save()
                 # TODO: crop
-                crop_img = open(PROJECT_ROOT + "/temp/" + uid + "/upload.jpg", "rb")
+                crop_img = open(PROJECT_ROOT + "/temp/" + i + ".jpg", "rb")
                 crop = Crop.objects.create(original_image=image, image=File(crop_img))
                 crop.save()
         return HttpResponse(status=201)
