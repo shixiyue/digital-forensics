@@ -65,6 +65,7 @@ class CroppingModel():
         from .models import Image, Crop
 
         # Load image or just use image
+        print(img)
         if isinstance(img, str):
             img = cv2.imread(img)
         # Make prediction
@@ -75,12 +76,11 @@ class CroppingModel():
         for i in range(len(classes)):
             if classes[i] == 0:
                 medical_boxes.append(outputs['instances']._fields['pred_boxes'].to("cpu")[i].__dict__['tensor'][0].numpy().astype(int))
-        for box in medical_boxes:
-            for x0, y0, x1, y1 in box:
-                crop_img = img[y0:y1, x0:x1]
-                crop = Crop.objects.create(original_image=Image.objects.get(id=img_id), 
+        for x0, y0, x1, y1 in medical_boxes:
+            crop_img = img[y0:y1, x0:x1]
+            crop = Crop.objects.create(original_image=Image.objects.get(id=img_id), 
                                            image=File(crop_img))
-                crop.save()
+            print(crop.id)
             
     
     # Function that gets medical image boxes results in format [[type, [x0, y0, x1, y1]], ...]

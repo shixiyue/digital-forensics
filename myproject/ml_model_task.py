@@ -1,5 +1,4 @@
 """Celery task for making ML Model predictions."""
-import importlib
 from celery import Task
 
 from forensics.cropping import CroppingModel

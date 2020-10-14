@@ -222,7 +222,6 @@ class SubmissionViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["post"])
     def submit(self, request):
-        images = []
         request.data.pop("csrfmiddlewaretoken", None)
         try:
             require_certificate = 1
@@ -240,7 +239,8 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             for output in sorted(os.listdir(dirname)):
                 file_name = os.path.join(dirname, output)
                 f = open(file_name, "rb")
-                image = Image.objects.create(submission=submission, image=File(f))
+                new_id = Image.objects.latest('id').id + 1
+                image = Image.objects.create(id=new_id, submission=submission, image=File(f))
                 new_name = os.path.join(dirname, f"{image.id}.jpg")
                 os.rename(file_name, new_name)
                 image.save()

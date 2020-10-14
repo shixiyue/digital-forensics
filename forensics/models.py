@@ -85,6 +85,7 @@ class ImageStatus(models.IntegerChoices):
     REDO = 3
 
 class Image(models.Model):
+    id = models.IntegerField(primary_key=True, editable=False)
     submission = models.ForeignKey(Submission, on_delete=models.CASCADE)
     image = models.FileField(upload_to=upload_file_name)
     certified = models.IntegerField(choices=ImageStatus.choices, default=0)
