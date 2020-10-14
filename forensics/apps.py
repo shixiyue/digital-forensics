@@ -7,7 +7,7 @@ class ForensicsConfig(AppConfig):
     name = "forensics"
 
     def ready(self):
-        from .signals import run_detection_script
+        from .signals import run_cropping_script
         from .models import Image
 
-        post_save.connect(run_detection_script, sender=Image)
+        post_save.connect(run_cropping_script, sender=Image)

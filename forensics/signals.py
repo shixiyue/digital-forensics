@@ -12,6 +12,6 @@ from myproject.celery import celery_app
 @receiver(post_save, sender=Image)
 def run_cropping_script(sender, instance, created, **kwargs):
     if created:
-        task = app.tasks["cropping"]
+        task = celery_app.tasks["cropping"]
         img = f"{PROJECT_ROOT}/temp/{instance.submission.id}/{instance.id}.jpg"
         task.delay(img)
