@@ -229,7 +229,7 @@ class SubmissionViewSet(viewsets.ModelViewSet):
         except:
             require_certificate = 0
         submission = Submission.objects.create(user=request.user, status=require_certificate)
-        dirname = PROJECT_ROOT + "/temp/" + submission.id
+        dirname = f"{PROJECT_ROOT}/temp/{submission.id}"
         os.makedirs(dirname)
         if 'pdf' in request.data:
             upload = request.data['pdf']
@@ -245,12 +245,12 @@ class SubmissionViewSet(viewsets.ModelViewSet):
                 os.rename(file_name, new_name)
                 image.save()
                 # TODO: crop
-                f = open(os.path.join(dirname, output), "rb")
+                f = open(os.path.join(dirname, new_name), "rb")
                 crop = Crop.objects.create(original_image=image, image=File(f))
                 crop.save()
         else:
             for i, upload in enumerate(request.data.values()):
-                with open(PROJECT_ROOT + "/temp/" + i + ".jpg", 'wb+') as f:
+                with open(os.path.join(dirname, str(i) + ".jpg", 'wb+')) as f:
                     for chunk in upload.chunks():
                         f.write(chunk)
                 upload.seek(0)
