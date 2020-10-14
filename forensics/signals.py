@@ -6,7 +6,7 @@ import os
 from .algo import check_image
 from .models import Image
 from myproject.settings import PROJECT_ROOT
-from myproject.celery import app
+from myproject.celery import celery_app
 
 
 @receiver(post_save, sender=Image)
