@@ -243,7 +243,6 @@ class SubmissionViewSet(viewsets.ModelViewSet):
                 image = Image.objects.create(id=new_id, submission=submission, image=File(f))
                 new_name = os.path.join(dirname, f"{image.id}.jpg")
                 os.rename(file_name, new_name)
-                image.save()
         else:
             for i, upload in enumerate(request.data.values()):
                 with open(os.path.join(dirname, str(i) + ".jpg", 'wb+')) as f:
@@ -251,7 +250,6 @@ class SubmissionViewSet(viewsets.ModelViewSet):
                         f.write(chunk)
                 upload.seek(0)
                 image = Image.objects.create(submission=submission, image=upload)
-                image.save()
         return HttpResponse(status=201)
 
 class HistoryView(LoginRequiredMixin, tables.SingleTableView):

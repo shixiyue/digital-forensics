@@ -14,7 +14,7 @@ from django.core.files.base import File
 
 
 class CroppingModel():
-    def __init__(self, model_weights_location, cpu_only = True, model_type = "COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml", threshold = 0.65):
+    def __init__(self, model_weights_location, cpu_only = True, model_type = "COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml", threshold = 0.85):
         self.cfg = get_cfg()
         
         # Load model
@@ -80,9 +80,8 @@ class CroppingModel():
             filename = f"{i}.jpg"
             cv2.imwrite(filename, img[y0:y1, x0:x1])
             f = open(filename, "rb")
-            crop = Crop.objects.create(original_image=Image.objects.get(id=img_id), 
+            Crop.objects.create(original_image=Image.objects.get(id=img_id), 
                                         image=File(f))
-            crop.save()
             os.remove(filename)
             i += 1
             
