@@ -1,10 +1,10 @@
 import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "myproject.settings")
+
 from celery import Celery
 from celery.app.registry import TaskRegistry
 
 from .ml_model_task import CroppingModelPredictionTask
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "myproject.settings")
 
 registry = TaskRegistry()
 registry.register(CroppingModelPredictionTask())
