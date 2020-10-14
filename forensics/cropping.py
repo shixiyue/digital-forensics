@@ -61,12 +61,11 @@ class CroppingModel():
             cv2.imwrite(save_image_path, out.get_image()[:, :, ::-1])
     
     # Function that gets medical image boxes results in format [[x0, y0, x1, y1], ...]
-    def medical_bounding_boxes(self, img_id, img):
+    def medical_bounding_boxes(self, img_id, img_name):
         from .models import Image, Crop
-
-        # Load image or just use image
-        if isinstance(img, str):
-            img = cv2.imread(img)
+        print(img_name)
+        # Load image
+        img = cv2.imread(img_name)
         # Make prediction
         outputs = self.predictor(img)
         # Store all medical boxes (class 0)
