@@ -10,15 +10,12 @@ def _get_analysis(instance):
     return os.path.join(_get_crop(instance.crop), str(instance.id))
 
 def upload_file_name(instance, filename):
-    print(filename)
     _, ext = os.path.splitext(filename)
     return os.path.join(_get_upload(instance), "upload" + ext.lower())
 
 def crop_file_name(instance, filename):
-    print(filename)
-    _, ext = os.path.splitext(filename)
-    return _get_crop(instance) + ext.lower()
+    return os.path.join(_get_upload(instance.original_image), filename)
 
 def analysis_file_name(instance, filename):
-    _, ext = os.path.splitext(filename)
-    return _get_analysis(instance) + ext.lower()
+    crop_dir, _ = os.path.splitext(instance.crop.image)
+    return os.path.join(crop_dir, filename)

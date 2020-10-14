@@ -10,8 +10,8 @@ from detectron2.data import MetadataCatalog
 from detectron2.config import get_cfg
 from detectron2.utils.visualizer import Visualizer
 from detectron2.utils.visualizer import ColorMode
-
 from django.core.files.base import File
+
 
 class CroppingModel():
     def __init__(self, model_weights_location, cpu_only = True, model_type = "COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml", threshold = 0.65):
@@ -65,7 +65,6 @@ class CroppingModel():
         from .models import Image, Crop
 
         # Load image or just use image
-        print(img)
         if isinstance(img, str):
             img = cv2.imread(img)
         # Make prediction
@@ -76,11 +75,16 @@ class CroppingModel():
         for i in range(len(classes)):
             if classes[i] == 0:
                 medical_boxes.append(outputs['instances']._fields['pred_boxes'].to("cpu")[i].__dict__['tensor'][0].numpy().astype(int))
+        i = 0
         for x0, y0, x1, y1 in medical_boxes:
-            crop_img = img[y0:y1, x0:x1]
+            filename = f"{i}.jpg"
+            cv2.imwrite(filename, img[y0:y1, x0:x1])
+            f = open(filename, "rb")
             crop = Crop.objects.create(original_image=Image.objects.get(id=img_id), 
-                                           image=File(crop_img))
-            print(crop.id)
+                                        image=File(f))
+            crop.save()
+            os.remove(filename)
+            i += 1
             
     
     # Function that gets medical image boxes results in format [[type, [x0, y0, x1, y1]], ...]
