@@ -6,7 +6,7 @@ function redirect(duration, $alert) {
   var timer = duration;
   setInterval(function () {
     if (timer > 0) {
-      $alert.text('Upload success, redircting to adjust crops in ' + i + ' seconds...');
+      $alert.text('Upload success, redircting to adjust crops in ' + timer + ' seconds...');
       timer--;
     } else {
       window.location.replace("http://digitalforensics.report/adjust_crops/");
