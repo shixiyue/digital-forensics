@@ -77,7 +77,7 @@ window.addEventListener('DOMContentLoaded', function () {
         height: dimension.height,
       });
       canvas.toBlob(function (blob) {
-        formData.append('image-' + i, blob, filenames);
+        formData.append('image-' + i, blob, filename);
         i++;
         canvas = cropper.getCroppedCanvas();
         addImage(canvas.toDataURL());
