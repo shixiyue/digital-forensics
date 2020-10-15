@@ -64,7 +64,6 @@ class CroppingModel():
     # Function that gets medical image boxes results in format [[x0, y0, x1, y1], ...]
     def medical_bounding_boxes(self, img_id, img_name):
         from .models import Image, Crop
-        print(img_name)
         # Load image
         img = cv2.imread(img_name)
         if img is None:
@@ -86,11 +85,12 @@ class CroppingModel():
             filename = f"{dirname}/{i}.jpg"
             cv2.imwrite(filename, img[y0:y1, x0:x1])
             f = open(filename, "rb")
-            Crop.objects.create(original_image=Image.objects.get(id=img_id), 
-                                        image=File(f))
+            crop = Crop.objects.create(original_image=Image.objects.get(id=img_id), 
+                x=x0, y=y0, width=x1-x0, height=y1-y0)
+            crop.image = File(f)
+            crop.save()
             os.remove(filename)
-            i += 1
-            
+            i += 1            
     
     # Function that gets medical image boxes results in format [[type, [x0, y0, x1, y1]], ...]
     def all_bounding_boxes(self, img):

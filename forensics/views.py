@@ -30,10 +30,11 @@ import os
 import uuid
 import subprocess
 import shlex
+import PIL
 
 from .forms import SignUpForm, LoginForm
 from .tokens import account_activation_token
-from .models import WebsiteUser, Image, Submission, Crop
+from .models import WebsiteUser, Image, Submission, Crop, ImageStatus
 from .tables import SubmissionTable, SubmissionAdminTable
 from .serializers import ImageSerializer
 from .serializers import SubmissionSerializer
@@ -134,7 +135,46 @@ def dashboard_view(request):
 
 @login_required(login_url="/login/")
 def adjust_view(request):
-    return render(request, "index.html")
+    if request.method == "POST":
+        if request.POST.get('remove'):
+            id = int(request.POST.get('id'))
+            Crop.objects.filter(id=id).delete()
+        elif request.POST.get('adjust'):
+            x = int(float(request.POST.get('x')))
+            y = int(float(request.POST.get('y')))
+            width = int(float(request.POST.get('width')))
+            height = int(float(request.POST.get('height')))
+
+            id = int(request.POST.get('id'))
+            if id < 0:
+                original_image = Image.objects.get(id=int(request.POST.get('image_id')))
+                crop = Crop.objects.create(original_image=original_image)
+            else:
+                crop = Crop.objects.get(id=id)
+            dirname = f"{PROJECT_ROOT}/temp/{crop.original_image.submission.id}"
+            filename = os.path.join(dirname, f'{crop.original_image.id}')
+            image = PIL.Image.open(filename+".jpg")
+            image = image.crop((x, y, x+width, y+height))
+            filename = filename + os.path.basename(crop.image.url)
+            image.save(filename)
+            f = open(filename, "rb")
+            crop.x, crop.y, crop.width, crop.height = x, y, width, height
+            crop.image = File(f)
+            crop.save()
+        elif request.POST.get('next'):
+            image = Image.objects.filter(certified=ImageStatus.NOT_CONFIRMED).order_by("id")[0]
+            image.certified = ImageStatus.DEFAULT
+            image.save()
+
+    images = Image.objects.filter(certified=ImageStatus.NOT_CONFIRMED).order_by("id")
+    if len(images) == 0:
+        return render(request, "all_set.html")
+    image = images[0]
+    crops = list(Crop.objects.filter(original_image=image.id).order_by("id"))
+    return render(
+        request, 
+        "adjust_crop.html", 
+        {"submission_id": image.submission.id, "image": image, "crops": crops})
 
 @login_required(login_url="/login/")
 def submission_details_view(request, id):
@@ -250,11 +290,12 @@ class SubmissionViewSet(viewsets.ModelViewSet):
                 os.rename(file_name, new_name)
         else:
             for i, upload in enumerate(request.data.values()):
-                with open(os.path.join(dirname, str(i) + ".jpg", 'wb+')) as f:
+                with open(os.path.join(dirname, str(i) + ".jpg"), 'wb+') as f:
                     for chunk in upload.chunks():
                         f.write(chunk)
                 upload.seek(0)
-                image = Image.objects.create(submission=submission, image=upload)
+                new_id = Image.objects.latest('id').id + 1
+                image = Image.objects.create(id=new_id, submission=submission, image=upload)
         return HttpResponse(status=201)
 
 class HistoryView(LoginRequiredMixin, tables.SingleTableView):

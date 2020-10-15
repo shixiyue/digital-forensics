@@ -98,6 +98,10 @@ class Image(models.Model):
 class Crop(models.Model):
     original_image = models.ForeignKey(Image, on_delete=models.CASCADE)
     image = models.FileField(upload_to=crop_file_name)
+    x = models.IntegerField(null=True)
+    y = models.IntegerField(null=True)
+    width = models.IntegerField(null=True)
+    height = models.IntegerField(null=True)
     certified = models.IntegerField(choices=ImageStatus.choices, default=0)
 
     def __str__(self):

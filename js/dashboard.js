@@ -59,7 +59,7 @@ window.addEventListener('DOMContentLoaded', function () {
       cropper.destroy();
     }
     cropper = new Cropper(image, {
-      viewMode: 3,
+      viewMode: 2,
       rotatable: false,
       scalable: false,
       autoCropArea: 1
@@ -77,7 +77,7 @@ window.addEventListener('DOMContentLoaded', function () {
         height: dimension.height,
       });
       canvas.toBlob(function (blob) {
-        formData.append('image-' + i, blob, filename);
+        formData.append('image-' + i, blob, filenames);
         i++;
         canvas = cropper.getCroppedCanvas();
         addImage(canvas.toDataURL());
@@ -104,10 +104,10 @@ window.addEventListener('DOMContentLoaded', function () {
       data: formData,
       async: false,
       success: function () {
-        $alert.show().addClass('alert-success').text('Upload success, redicrting to adjust crops...');
+        $alert.show().addClass('alert-success').text('Upload success, redicrting to adjust crops in 10 seconds...');
         window.setTimeout(function(){
-          window.location.replace("{% url 'adjust_crops' %}");
-        }, 5000);
+          window.location.replace("http://digitalforensics.report/adjust_crops/");
+        }, 10000);
       },
       error: function () {
         $alert.show().addClass('alert-danger').text('Upload error');
