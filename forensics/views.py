@@ -180,7 +180,7 @@ def adjust_view(request):
 @login_required(login_url="/login/")
 def submission_details_view(request, id):
     submission = Submission.objects.get(id=id)
-    images = list(Image.objects.filter(submission=submission.id, submission__user=self.request.user).order_by("id"))
+    images = list(Image.objects.filter(submission=submission.id, submission__user=request.user).order_by("id"))
     crops = []
     for image in images:
         crops.append(list(Crop.objects.filter(original_image=image.id).order_by("id")))
