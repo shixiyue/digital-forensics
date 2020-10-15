@@ -55,7 +55,7 @@
                 <span>Done with adjusting this image. Move to the next.</span>
                 <form action="#" method="post">
                     {% csrf_token %}
-                    <input type="submit" name="next" class="btn btn-primary" id="next" value="Next">
+                    <input type="submit" name="next" class="btn btn-primary" id="next" value="Next" {% if disabled %} disabled {% endif %}>
                 </form>
             </div>
         </div>

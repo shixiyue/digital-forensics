@@ -77,7 +77,6 @@ window.addEventListener('DOMContentLoaded', function () {
     $modal.modal('show');
   })
 
-  document.getElementById('next').disabled = true;
   // TODO: Better way
   setTimeout(function(){document.getElementById('next').disabled=false;}, 3000);
 });

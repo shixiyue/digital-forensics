@@ -135,7 +135,9 @@ def dashboard_view(request):
 
 @login_required(login_url="/login/")
 def adjust_view(request):
+    disabled = True
     if request.method == "POST":
+        disabled = False
         if request.POST.get('remove'):
             id = int(request.POST.get('id'))
             Crop.objects.filter(id=id).delete()
@@ -176,7 +178,7 @@ def adjust_view(request):
     return render(
         request, 
         "adjust_crop.html", 
-        {"submission_id": image.submission.id, "image": image, "crops": crops})
+        {"submission_id": image.submission.id, "image": image, "crops": crops, "disabled": disabled})
 
 @login_required(login_url="/login/")
 def submission_details_view(request, id):
