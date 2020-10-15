@@ -159,7 +159,7 @@ def adjust_view(request):
             image.save(filename)
             f = open(filename, "rb")
             crop.x, crop.y, crop.width, crop.height = x, y, width, height
-            crop.upload.delete(save=False)
+            crop.image.delete(save=False)
             crop.image = File(f)
             crop.save()
         elif request.POST.get('next'):
