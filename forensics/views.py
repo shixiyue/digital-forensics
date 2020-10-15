@@ -290,12 +290,12 @@ class SubmissionViewSet(viewsets.ModelViewSet):
                 new_name = os.path.join(dirname, f"{image.id}.jpg")
                 os.rename(file_name, new_name)
         else:
-            for i, upload in enumerate(request.data.values()):
-                with open(os.path.join(dirname, str(i) + ".jpg"), 'wb+') as f:
+            for upload in request.data.values():
+                new_id = Image.objects.latest('id').id + 1
+                with open(os.path.join(dirname, str(new_id) + ".jpg"), 'wb+') as f:
                     for chunk in upload.chunks():
                         f.write(chunk)
                 upload.seek(0)
-                new_id = Image.objects.latest('id').id + 1
                 image = Image.objects.create(id=new_id, submission=submission, image=upload)
         return HttpResponse(status=201)
 

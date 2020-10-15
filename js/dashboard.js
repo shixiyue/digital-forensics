@@ -116,7 +116,7 @@ window.addEventListener('DOMContentLoaded', function () {
       data: formData,
       async: false,
       success: function () {
-        $alert.show().addClass('alert-success')
+        $alert.show().addClass('alert-success').text('Upload success, redircting to adjust crops in 8 seconds...');
         redirect(8, $alert);
       },
       error: function () {
