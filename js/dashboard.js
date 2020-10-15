@@ -3,7 +3,7 @@ function addImage(url) {
 };
 
 function redirect(duration, $alert) {
-  var timer = duration;
+  var timer = duration - 1;
   setInterval(function () {
     if (timer > 0) {
       $alert.text('Upload success, redircting to adjust crops in ' + timer + ' seconds...');

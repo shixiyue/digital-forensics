@@ -238,7 +238,7 @@ def analysis_view(request, sub_id, crop_id):
 
 @staff_member_required
 def analysis_admin_view(request, sub_id, crop_id):
-    crop = Crop.objects.get(sig=crop_id)
+    crop = Crop.objects.get(id=crop_id)
     status = None
     if request.method == "POST":
         status = request.POST.get("status")
