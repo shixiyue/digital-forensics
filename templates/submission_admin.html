@@ -7,11 +7,15 @@
         margin: 0px;
     }
 
-    .btn {
+    .btn-sm {
         white-space: nowrap;
         text-align: center;
         padding: 0px;
         margin: 0px;
+    }
+
+    .row {
+        margin-bottom: 20px;
     }
 </style>
 {% endblock %}
@@ -79,7 +83,7 @@
     </div>
     {% endfor %}
     {% if submission.status != 0 %}
-    <div class="row" style="margin-top: 40px;">
+    <div class="row">
         <div class="card">
             <div class="card-body">
                 {{ num_cert }} out of {{ total }} images are given certificates in this submission.
