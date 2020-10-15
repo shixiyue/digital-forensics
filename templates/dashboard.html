@@ -35,6 +35,8 @@
         <div class="col">
           <input name="file" type="file" id="input" accept="image/*, application/pdf">
         </div>
+      </div>
+      <div class="row">
         <div class="col">
           <div class="custom-control custom-switch">
             <input type="checkbox" class="custom-control-input" id="is-applying">
@@ -42,7 +44,7 @@
           </div>
         </div>
         <div class="col">
-          <button type="button" class="btn btn-default" id="done">Finished Cropping</button>
+          <button type="button" class="btn btn-default" id="done">Upload</button>
         </div>
       </div>
     </form>
@@ -79,5 +81,5 @@
 <script type="text/javascript" src="{% static 'cropper/jquery-cropper.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
 <script type="text/javascript" src="{% static 'js/tiff.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/dashboard.js' %}"></script>
+<script type="text/javascript" src="../js/dashboard.js"></script>
 {% endblock %}

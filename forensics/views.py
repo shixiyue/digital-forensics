@@ -133,6 +133,10 @@ def dashboard_view(request):
     return render(request, "dashboard.html")
 
 @login_required(login_url="/login/")
+def adjust_view(request):
+    return render(request, "index.html")
+
+@login_required(login_url="/login/")
 def submission_details_view(request, id):
     submission = Submission.objects.get(id=id)
     images = list(Image.objects.filter(submission=submission.id).order_by("id"))
@@ -224,6 +228,7 @@ class SubmissionViewSet(viewsets.ModelViewSet):
     def submit(self, request):
         request.data.pop("csrfmiddlewaretoken", None)
         try:
+            request.data.pop('apply')
             require_certificate = 1
         except:
             require_certificate = 0

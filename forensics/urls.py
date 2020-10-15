@@ -18,6 +18,7 @@ urlpatterns = [
     path("activate/<slug:uidb64>/<slug:token>/", views.activate, name="activate"),
     path("about/", views.about_view, name="about"),
     path("dashboard/", views.dashboard_view, name="dashboard"),
+    path("adjust_crops/", views.adjust_view, name="adjust_crops"),
     path("dashboard/api/post/", views.SubmissionViewSet.as_view({"post": "submit"})),
     path("dashboard/api/view/", views.SubmissionViewSet.as_view({"get": "list"})),
     path("history/", views.HistoryView.as_view(), name="history"),

@@ -79,6 +79,7 @@ class Submission(models.Model):
             return "None"
 
 class ImageStatus(models.IntegerChoices):
+    NOT_CONFIRMED = -1
     DEFAULT = 0
     CERTIFIED = 1
     MANIPULATED = 2
@@ -88,7 +89,7 @@ class Image(models.Model):
     id = models.IntegerField(primary_key=True, editable=False)
     submission = models.ForeignKey(Submission, on_delete=models.CASCADE)
     image = models.FileField(upload_to=upload_file_name)
-    certified = models.IntegerField(choices=ImageStatus.choices, default=0)
+    certified = models.IntegerField(choices=ImageStatus.choices, default=-1)
     certificate_link = models.URLField(blank=True)
 
     def __str__(self):
