@@ -1,4 +1,5 @@
 import os
+from random import randrange
 
 def _get_upload(instance):
     return os.path.join("uploads", str(instance.id))
@@ -14,7 +15,7 @@ def upload_file_name(instance, filename):
     return os.path.join(_get_upload(instance), "upload" + ext.lower())
 
 def crop_file_name(instance, filename):
-    return os.path.join(_get_upload(instance.original_image), f"{instance.id}.jpg")
+    return os.path.join(_get_upload(instance.original_image), f"{instance.id}-{randrange(10)}.jpg")
 
 def analysis_file_name(instance, filename):
     crop_dir, _ = os.path.splitext(instance.crop.image)

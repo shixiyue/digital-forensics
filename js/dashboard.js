@@ -2,6 +2,18 @@ function addImage(url) {
   $('#uploads').append('<div class="col-md-4 col-sm-6 upload-images" style="margin-bottom: 20px;"><img src="' + url + '" class="thumbnail img-fluid"></div>');
 };
 
+function redirect(duration, $alert) {
+  var timer = duration;
+  setInterval(function () {
+    if (timer > 0) {
+      $alert.text('Upload success, redircting to adjust crops in ' + i + ' seconds...');
+      timer--;
+    } else {
+      window.location.replace("http://digitalforensics.report/adjust_crops/");
+    }
+  }, 1000);
+}
+
 window.addEventListener('DOMContentLoaded', function () {
   var image = document.getElementById('image');
   var input = document.getElementById('input');
@@ -104,10 +116,8 @@ window.addEventListener('DOMContentLoaded', function () {
       data: formData,
       async: false,
       success: function () {
-        $alert.show().addClass('alert-success').text('Upload success, redicrting to adjust crops in 10 seconds...');
-        window.setTimeout(function(){
-          window.location.replace("http://digitalforensics.report/adjust_crops/");
-        }, 10000);
+        $alert.show().addClass('alert-success')
+        redirect(8, $alert);
       },
       error: function () {
         $alert.show().addClass('alert-danger').text('Upload error');
