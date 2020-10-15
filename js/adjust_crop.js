@@ -79,5 +79,5 @@ window.addEventListener('DOMContentLoaded', function () {
 
   document.getElementById('next').disabled = true;
   // TODO: Better way
-  setTimeout(function(){document.getElementById('next').disabled=False;}, 3000);
+  setTimeout(function(){document.getElementById('next').disabled=false;}, 3000);
 });

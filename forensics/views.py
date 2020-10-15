@@ -155,7 +155,7 @@ def adjust_view(request):
             filename = os.path.join(dirname, f'{crop.original_image.id}')
             image = PIL.Image.open(filename+".jpg")
             image = image.crop((x, y, x+width, y+height))
-            filename = filename + os.path.basename(crop.image.url)
+            filename = filename + "/updated.jpg"
             image.save(filename)
             f = open(filename, "rb")
             crop.x, crop.y, crop.width, crop.height = x, y, width, height
