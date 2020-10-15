@@ -163,7 +163,7 @@ def adjust_view(request):
             crop.image = File(f)
             crop.save()
         elif request.POST.get('next'):
-            image = Image.objects.filter(certified=ImageStatus.NOT_CONFIRMED).order_by("id")[0]
+            image = Image.objects.filter(certified=ImageStatus.NOT_CONFIRMED, submission__user=request.user).order_by("id")[0]
             image.certified = ImageStatus.DEFAULT
             image.save()
 
