@@ -306,6 +306,16 @@ class SubmissionViewSet(viewsets.ModelViewSet):
                 image = Image.objects.create(id=new_id, submission=submission, image=upload)
         return HttpResponse(status=201)
 
+class MoreDataViewSet(viewsets.ModelViewSet):
+    queryset = Submission.objects.all()
+    serializer_class = SubmissionSerializer
+    parser_classes = (FormParser, MultiPartParser)
+
+    @action(detail=True, methods=["post"])
+    def submit(self, request):
+        request.data.pop("csrfmiddlewaretoken", None)
+        return HttpResponse(status=201)
+
 class HistoryView(LoginRequiredMixin, tables.SingleTableView):
     login_url = "/login/"
     table_class = SubmissionTable
