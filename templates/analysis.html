@@ -33,6 +33,7 @@
             <h4>Analysis Outputs</h4>
             {% for output in outputs %}
             <h5>Very similar crop within in the submission</h5>
+            {% load static %}
             <img class="img-fluid" src="{% static 'placeholder/analysis1.PNG' %}" />
             <h5>Suspected copy-paste modification</h5>
             <img class="img-fluid" src="{% static 'placeholder/analysis2.PNG' %}" />
