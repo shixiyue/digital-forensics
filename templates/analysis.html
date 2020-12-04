@@ -32,7 +32,10 @@
         <div class="col-md-6 col-xs-5">
             <h4>Analysis Outputs</h4>
             {% for output in outputs %}
-            <img class="img-fluid" src="{{ output }}" />
+            <h5>Very similar crop within in the submission</h5>
+            <img class="img-fluid" src="{% static 'placeholder/analysis1.PNG' %}" />
+            <h5>Suspected copy-paste modification</h5>
+            <img class="img-fluid" src="{% static 'placeholder/analysis2.PNG' %}" />
             {% endfor %}
         </div>
     </div>
