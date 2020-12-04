@@ -2,18 +2,6 @@ function addImage(url) {
   $('#uploads').append('<div class="col-md-4 col-sm-6 upload-images" style="margin-bottom: 20px;"><img src="' + url + '" class="thumbnail img-fluid"></div>');
 };
 
-function redirect(duration, $alert) {
-  var timer = duration - 1;
-  setInterval(function () {
-    if (timer > 0) {
-      $alert.text('Upload success, redircting to adjust crops in ' + timer + ' seconds...');
-      timer--;
-    } else {
-      window.location.replace("http://digitalforensics.report/adjust_crops/");
-    }
-  }, 1000);
-}
-
 window.addEventListener('DOMContentLoaded', function () {
   var image = document.getElementById('image');
   var input = document.getElementById('input');
@@ -40,10 +28,7 @@ window.addEventListener('DOMContentLoaded', function () {
       filename = file.name;
       
       extension = filename.split('.').pop();
-      if (extension  === "pdf" || extension === "PDF") {
-        formData.append('pdf', file);
-      }
-      else if (extension === 'tiff' || extension === 'tif') {
+      if (extension === 'tiff' || extension === 'tif') {
         reader = new FileReader();
         reader.onload = (function (theFile) {
           return function (e) {
@@ -107,9 +92,7 @@ window.addEventListener('DOMContentLoaded', function () {
     }
     var csrftoken = Cookies.get('csrftoken');
     formData.append('csrfmiddlewaretoken', csrftoken);
-    if ($('#is-applying').is(':checked')) {
-      formData.append('apply', 'true');
-    }
+    formData.append('comment', $("#caption").val());
     $.ajax({
       url: 'api/post/',
       type: 'POST',

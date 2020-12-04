@@ -19,6 +19,7 @@ urlpatterns = [
     path("about/", views.about_view, name="about"),
     path("dashboard/", views.dashboard_view, name="dashboard"),
     path("more_data/", views.data_view, name="more_data"),
+    path("more_data/api/post/", views.SubmissionViewSet.as_view({"post": "submit"})),
     path("adjust_crops/", views.adjust_view, name="adjust_crops"),
     path("dashboard/api/post/", views.SubmissionViewSet.as_view({"post": "submit"})),
     path("dashboard/api/view/", views.SubmissionViewSet.as_view({"get": "list"})),
