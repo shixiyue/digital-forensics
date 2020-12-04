@@ -134,6 +134,10 @@ def dashboard_view(request):
     return render(request, "dashboard.html")
 
 @login_required(login_url="/login/")
+def data_view(request):
+    return render(request, "more_data.html")
+
+@login_required(login_url="/login/")
 def adjust_view(request):
     disabled = True
     if request.method == "POST":
