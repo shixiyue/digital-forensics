@@ -1,453 +1,135 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>about</title>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" /> {% load static %}
-    <link href="{% static 'resources/css/axure_rp_page.css' %}" type="text/css" rel="stylesheet" />
-    <link href="{% static 'data/styles.css' %}" type="text/css" rel="stylesheet" />
-    <link href="{% static 'files/about/styles.css' %}" type="text/css" rel="stylesheet" />
-    <script src="{% static 'resources/scripts/jquery-3.2.1.min.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/axQuery.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/globals.js' %}"></script>
-    <script src="{% static 'resources/scripts/axutils.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/annotation.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/axQuery.std.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/doc.js' %}"></script>
-    <script src="{% static 'resources/scripts/messagecenter.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/events.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/recording.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/action.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/expr.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/geometry.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/flyout.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/model.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/repeater.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/sto.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/utils.temp.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/variables.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/drag.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/move.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/visibility.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/style.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/adaptive.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/tree.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/init.temp.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/legacy.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/viewer.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/math.js' %}"></script>
-    <script src="{% static 'resources/scripts/axure/jquery.nicescroll.min.js' %}"></script>
-    <script src="{% static 'data/document.js' %}"></script>
-    <script src="{% static 'files/about/data.js' %}"></script>
-    <script type="text/javascript">
-        $axure.utils.getTransparentGifPath = function() {
-            return "{% static 'resources/images/transparent.gif' %}"
-            ";
-        };
-        $axure.utils.getOtherPath = function() {
-            return "{% static 'resources/Other.html' %}";
-        };
-        $axure.utils.getReloadPath = function() {
-            return "{% static 'resources/reload.html' %}";
-        };
-    </script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link rel="icon" type="image/png" sizes="32x32"
+        href="https://www.tech.cornell.edu/wp-content/themes/cornell-tech/assets/favicons/favicon-32x32.png">
+    {% if title %}
+    <title>{{ title }}</title>
+    {% else %}
+    <title>Digital Forensics</title>
+    {% endif %}
+    {% load static %}
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/mdb.min.css' %}" rel="stylesheet">
+    <!-- Your custom styles (optional) -->
+    <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1 0 auto;
+        }
+    </style>
+    {% block head %}
+    {% endblock %}
 </head>
 
-<body>
-    <div id="base" class="">
+<body class="grey lighten-3">
+    <!--Main Navigation-->
+    <header>
+        <!-- Navbar -->
+        <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar" style="">
+            <div class="container-fluid">
+                <!-- Brand -->
+                <a class="navbar-brand waves-effect" href="{% url 'index' %}">
+                    <strong class="blue-text">Digital Forensics</strong>
+                </a>
+                <!-- Collapse -->
+                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <!-- Links -->
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto">
+                        <!-- Left -->
+                        <li class="nav-item active">
+                            <a class="nav-link waves-effect" href="{% url 'index' %}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link waves-effect" href="{% url 'about' %}">Learn More</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="https://github.com" class="nav-link border border-light rounded waves-effect"
+                                target="_blank">
+                                <i class="fab fa-github mr-2"></i>Source Code GitHub
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Navbar -->
+    </header>
+    <!--Main Navigation-->
 
-        <!-- Unnamed (Rectangle) -->
-        <div id="u20" class="ax_default box_1">
-            <img id="u20_img" class="img " src="{% static 'images/about/u20.svg' %}" />
-            <div id="u20_text" class="text " style="display:none; visibility: hidden">
-                <p></p>
+    <!--Main layout-->
+    <main class="pt-5 mx-lg-5">
+        <div class="container-fluid mt-5">
+            <ul class="nav nav-pills">
+                <li class="active"><a data-toggle="pill" href="#home">Home</a></li>
+                <li><a data-toggle="pill" href="#menu1">Menu 1</a></li>
+                <li><a data-toggle="pill" href="#menu2">Menu 2</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div id="home" class="tab-pane fade in active">
+                    <h3>HOME</h3>
+                    <p>Some content.</p>
+                    <embed src="{% static 'pdf/Digital_Forensics_Final_Report.pdf' %}" type="application/pdf" width="100%" height="100%">
+                </div>
+                <div id="menu1" class="tab-pane fade">
+                    <h3>Menu 1</h3>
+                    <p>Some content in menu 1.</p>
+                </div>
+                <div id="menu2" class="tab-pane fade">
+                    <h3>Menu 2</h3>
+                    <p>Some content in menu 2.</p>
+                </div>
             </div>
         </div>
 
-        <!-- Unnamed (Rectangle) -->
-        <div id="u21" class="ax_default heading_1">
-            <div id="u21_div" class=""></div>
-            <div id="u21_text" class="text ">
-                <p><span>Digital Forensics</span></p>
-            </div>
+    </main>
+    <!--Main layout-->
+
+    <!--Footer-->
+    <footer class="page-footer text-center font-small primary-color-dark darken-2 mt-4 wow fadeIn"
+        style="visibility: visible; animation-name: fadeIn;">
+
+        <!--Copyright-->
+        <div class="footer-copyright py-3">
+            © 2020 Copyright:
+            <a href="{% url 'index' %}"> DigitalForensics.report </a>
         </div>
+        <!--/.Copyright-->
 
-        <!-- Tabs (Group) -->
-        <div id="u22" class="ax_default" data-label="Tabs" data-left="45" data-top="83" data-width="924" data-height="1009">
+    </footer>
+    <!--/.Footer-->
 
-            <!-- Tab Label 3 (Rectangle) -->
-            <div id="u23" class="ax_default box_3" data-label="Tab Label 3" selectiongroup="Tabs">
-                <div id="u23_div" class=""></div>
-                <div id="u23_text" class="text ">
-                    <p><span>Final Report II</span></p>
-                </div>
-            </div>
-
-            <!-- Tab Label 2 (Rectangle) -->
-            <div id="u24" class="ax_default box_3" data-label="Tab Label 2" selectiongroup="Tabs">
-                <div id="u24_div" class=""></div>
-                <div id="u24_text" class="text ">
-                    <p><span>Final Report I</span></p>
-                </div>
-            </div>
-
-            <!-- Tab Label 1 (Rectangle) -->
-            <div id="u25" class="ax_default box_3" data-label="Tab Label 1" selectiongroup="Tabs">
-                <div id="u25_div" class=""></div>
-                <div id="u25_text" class="text ">
-                    <p><span>Project Proposal</span></p>
-                </div>
-            </div>
-
-            <!-- Tab Panels (Dynamic Panel) -->
-            <div id="u26" class="ax_default" data-label="Tab Panels">
-                <div id="u26_state0" class="panel_state" data-label="team" style="">
-                    <div id="u26_state0_content" class="panel_state_content">
-
-                        <!-- Unnamed (Rectangle) -->
-                        <div id="u27" class="ax_default box_1">
-                            <div id="u27_text" class="text " style="display:none; visibility: hidden">
-                                <p></p>
-                            </div>
-                        </div>
-
-                        <!-- Unnamed (Rectangle) -->
-                        <div id="u28" class="ax_default heading_1">
-                            <div id="u28_div" class=""></div>
-                            <div id="u28_text" class="text ">
-                                <p><span>The Digital Forensics Team</span></p>
-                            </div>
-                        </div>
-
-                        <!-- Card (Group) -->
-                        <div id="u29" class="ax_default" data-label="Card" data-left="91" data-top="102" data-width="300" data-height="340">
-
-                            <!-- Card Background (Rectangle) -->
-                            <div id="u30" class="ax_default shape" data-label="Card Background">
-                                <div id="u30_div" class=""></div>
-                                <div id="u30_text" class="text " style="display:none; visibility: hidden">
-                                    <p></p>
-                                </div>
-                            </div>
-
-                            <!-- Button 2 (Rectangle) -->
-                            <div id="u31" class="ax_default link_button" data-label="Button 2">
-                                <div id="u31_div" class=""></div>
-                                <div id="u31_text" class="text ">
-                                    <p><span>Github</span></p>
-                                </div>
-                            </div>
-
-                            <!-- Button 1 (Rectangle) -->
-                            <div id="u32" class="ax_default link_button" data-label="Button 1">
-                                <div id="u32_div" class=""></div>
-                                <div id="u32_text" class="text ">
-                                    <p><span>Linkedin</span></p>
-                                </div>
-                            </div>
-
-                            <!-- Summary (Rectangle) -->
-                            <div id="u33" class="ax_default paragraph" data-label="Summary">
-                                <div id="u33_div" class=""></div>
-                                <div id="u33_text" class="text ">
-                                    <p><span>Cornell Tech Connective Media student.</span></p>
-                                </div>
-                            </div>
-
-                            <!-- Unnamed (Rectangle) -->
-                            <div id="u34" class="ax_default heading_2">
-                                <div id="u34_div" class=""></div>
-                                <div id="u34_text" class="text ">
-                                    <p><span>Hangyu Lin (Author)</span></p>
-                                </div>
-                            </div>
-
-                            <!-- Image (Image) -->
-                            <div id="u35" class="ax_default image" data-label="Image">
-                                <img id="u35_img" class="img " src="{% static 'images/about/image_u35.svg' %}" />
-                                <div id="u35_text" class="text " style="display:none; visibility: hidden">
-                                    <p></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Card (Group) -->
-                        <div id="u36" class="ax_default" data-label="Card" data-left="533" data-top="102" data-width="300" data-height="340">
-
-                            <!-- Card Background (Rectangle) -->
-                            <div id="u37" class="ax_default shape" data-label="Card Background">
-                                <div id="u37_div" class=""></div>
-                                <div id="u37_text" class="text " style="display:none; visibility: hidden">
-                                    <p></p>
-                                </div>
-                            </div>
-
-                            <!-- Button 2 (Rectangle) -->
-                            <div id="u38" class="ax_default link_button" data-label="Button 2">
-                                <div id="u38_div" class=""></div>
-                                <div id="u38_text" class="text ">
-                                    <p><span>Github</span></p>
-                                </div>
-                            </div>
-
-                            <!-- Button 1 (Rectangle) -->
-                            <div id="u39" class="ax_default link_button" data-label="Button 1">
-                                <div id="u39_div" class=""></div>
-                                <div id="u39_text" class="text ">
-                                    <p><span>Linkedin</span></p>
-                                </div>
-                            </div>
-
-                            <!-- Summary (Rectangle) -->
-                            <div id="u40" class="ax_default paragraph" data-label="Summary">
-                                <div id="u40_div" class=""></div>
-                                <div id="u40_text" class="text ">
-                                    <p><span>Cornell Tech Connective Media student.</span></p>
-                                </div>
-                            </div>
-
-                            <!-- Unnamed (Rectangle) -->
-                            <div id="u41" class="ax_default heading_2">
-                                <div id="u41_div" class=""></div>
-                                <div id="u41_text" class="text ">
-                                    <p><span>Xiyue Shi (Author)</span></p>
-                                </div>
-                            </div>
-
-                            <!-- Image (Image) -->
-                            <div id="u42" class="ax_default image" data-label="Image">
-                                <img id="u42_img" class="img " src="{% static 'images/about/image_u42.svg' %}" />
-                                <div id="u42_text" class="text " style="display:none; visibility: hidden">
-                                    <p></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Card (Group) -->
-                        <div id="u43" class="ax_default" data-label="Card" data-left="91" data-top="472" data-width="300" data-height="340">
-
-                            <!-- Card Background (Rectangle) -->
-                            <div id="u44" class="ax_default shape" data-label="Card Background">
-                                <div id="u44_div" class=""></div>
-                                <div id="u44_text" class="text " style="display:none; visibility: hidden">
-                                    <p></p>
-                                </div>
-                            </div>
-
-                            <!-- Button 2 (Rectangle) -->
-                            <div id="u45" class="ax_default link_button" data-label="Button 2">
-                                <div id="u45_div" class=""></div>
-                                <div id="u45_text" class="text ">
-                                    <p><span>Github</span></p>
-                                </div>
-                            </div>
-
-                            <!-- Button 1 (Rectangle) -->
-                            <div id="u46" class="ax_default link_button" data-label="Button 1">
-                                <div id="u46_div" class=""></div>
-                                <div id="u46_text" class="text ">
-                                    <p><span>Linkedin</span></p>
-                                </div>
-                            </div>
-
-                            <!-- Summary (Rectangle) -->
-                            <div id="u47" class="ax_default paragraph" data-label="Summary">
-                                <div id="u47_div" class=""></div>
-                                <div id="u47_text" class="text ">
-                                    <p><span>Dr. Cole is the currently the Chief Information Officer at Weill Cornell, where he is responsible for the core information services that support the research, clinical, education, and administrative functions of the college.</span></p>
-                                </div>
-                            </div>
-
-                            <!-- Unnamed (Rectangle) -->
-                            <div id="u48" class="ax_default heading_2">
-                                <div id="u48_div" class=""></div>
-                                <div id="u48_text" class="text ">
-                                    <p><span>Curtis L Cole (Supervisor)</span></p>
-                                </div>
-                            </div>
-
-                            <!-- Image (Image) -->
-                            <div id="u49" class="ax_default image" data-label="Image">
-                                <img id="u49_img" class="img " src="{% static 'images/about/image_u49.svg' %}" />
-                                <div id="u49_text" class="text " style="display:none; visibility: hidden">
-                                    <p></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Card (Group) -->
-                        <div id="u50" class="ax_default" data-label="Card" data-left="533" data-top="472" data-width="300" data-height="340">
-
-                            <!-- Card Background (Rectangle) -->
-                            <div id="u51" class="ax_default shape" data-label="Card Background">
-                                <div id="u51_div" class=""></div>
-                                <div id="u51_text" class="text " style="display:none; visibility: hidden">
-                                    <p></p>
-                                </div>
-                            </div>
-
-                            <!-- Button 2 (Rectangle) -->
-                            <div id="u52" class="ax_default link_button" data-label="Button 2">
-                                <div id="u52_div" class=""></div>
-                                <div id="u52_text" class="text ">
-                                    <p><span>Github</span></p>
-                                </div>
-                            </div>
-
-                            <!-- Button 1 (Rectangle) -->
-                            <div id="u53" class="ax_default link_button" data-label="Button 1">
-                                <div id="u53_div" class=""></div>
-                                <div id="u53_text" class="text ">
-                                    <p><span>Linkedin</span></p>
-                                </div>
-                            </div>
-
-                            <!-- Summary (Rectangle) -->
-                            <div id="u54" class="ax_default paragraph" data-label="Summary">
-                                <div id="u54_div" class=""></div>
-                                <div id="u54_text" class="text ">
-                                    <p><span>Assistant Librarian, Library , Weill Cornell Medical College</span></p>
-                                </div>
-                            </div>
-
-                            <!-- Unnamed (Rectangle) -->
-                            <div id="u55" class="ax_default heading_2">
-                                <div id="u55_div" class=""></div>
-                                <div id="u55_text" class="text ">
-                                    <p><span>Peter Robert Oxley (Supervisor)</span></p>
-                                </div>
-                            </div>
-
-                            <!-- Image (Image) -->
-                            <div id="u56" class="ax_default image" data-label="Image">
-                                <img id="u56_img" class="img " src="{% static 'images/about/image_u56.svg' %}" />
-                                <div id="u56_text" class="text " style="display:none; visibility: hidden">
-                                    <p></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="u26_state1" class="panel_state" data-label="proposal" style="visibility: hidden;">
-                    <div id="u26_state1_content" class="panel_state_content">
-
-                        <!-- Panel 1 Content (Rectangle) -->
-                        <div id="u57" class="ax_default shape" data-label="Panel 1 Content">
-                            <div id="u57_div" class=""></div>
-                            <div id="u57_text" class="text ">
-                                <p><span>This is some placeholder text on Tab 1</span></p>
-                            </div>
-                        </div>
-
-                        <!-- Unnamed (Rectangle) -->
-                        <div id="u58" class="ax_default box_1">
-                            <img id="u58_img" class="img " src="{% static 'images/about/u27.svg' %}" />
-                            <div id="u58_text" class="text " style="display:none; visibility: hidden">
-                                <p></p>
-                            </div>
-                        </div>
-
-                        <!-- Unnamed (Rectangle) -->
-                        <div id="u59" class="ax_default heading_1">
-                            <div id="u59_div" class=""></div>
-                            <div id="u59_text" class="text ">
-                                <p><span>Project Proposal</span></p>
-                            </div>
-                        </div>
-
-                        <!-- Unnamed (Inline Frame) -->
-                        <div id="u60" class="ax_default">
-                            <iframe id="u60_input" scrolling="auto" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-                        </div>
-                    </div>
-                </div>
-                <div id="u26_state2" class="panel_state" data-label="report1" style="visibility: hidden;">
-                    <div id="u26_state2_content" class="panel_state_content">
-
-                        <!-- Panel 2 Content (Rectangle) -->
-                        <div id="u61" class="ax_default shape" data-label="Panel 2 Content">
-                            <div id="u61_div" class=""></div>
-                            <div id="u61_text" class="text ">
-                                <p><span>This is some placeholder text on Tab 2</span></p>
-                            </div>
-                        </div>
-
-                        <!-- Unnamed (Rectangle) -->
-                        <div id="u62" class="ax_default box_1">
-                            <img id="u62_img" class="img " src="{% static 'images/about/u27.svg' %}" />
-                            <div id="u62_text" class="text " style="display:none; visibility: hidden">
-                                <p></p>
-                            </div>
-                        </div>
-
-                        <!-- Unnamed (Rectangle) -->
-                        <div id="u63" class="ax_default heading_1">
-                            <div id="u63_div" class=""></div>
-                            <div id="u63_text" class="text ">
-                                <p><span>Final Report I</span></p>
-                            </div>
-                        </div>
-
-                        <!-- Unnamed (Inline Frame) -->
-                        <div id="u64" class="ax_default">
-                            <iframe id="u64_input" scrolling="auto" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-                        </div>
-                    </div>
-                </div>
-                <div id="u26_state3" class="panel_state" data-label="report2" style="visibility: hidden;">
-                    <div id="u26_state3_content" class="panel_state_content">
-
-                        <!-- Panel 3 Content (Rectangle) -->
-                        <div id="u65" class="ax_default shape" data-label="Panel 3 Content">
-                            <div id="u65_div" class=""></div>
-                            <div id="u65_text" class="text ">
-                                <p><span>This is some placeholder text on Tab 3</span></p>
-                            </div>
-                        </div>
-
-                        <!-- Panel 2 Content (Rectangle) -->
-                        <div id="u66" class="ax_default shape" data-label="Panel 2 Content">
-                            <div id="u66_div" class=""></div>
-                            <div id="u66_text" class="text ">
-                                <p><span>This is some placeholder text on Tab 2</span></p>
-                            </div>
-                        </div>
-
-                        <!-- Unnamed (Rectangle) -->
-                        <div id="u67" class="ax_default box_1">
-                            <img id="u67_img" class="img " src="{% static 'images/about/u27.svg' %}" />
-                            <div id="u67_text" class="text " style="display:none; visibility: hidden">
-                                <p></p>
-                            </div>
-                        </div>
-
-                        <!-- Unnamed (Rectangle) -->
-                        <div id="u68" class="ax_default heading_1">
-                            <div id="u68_div" class=""></div>
-                            <div id="u68_text" class="text ">
-                                <p><span>Final Report II</span></p>
-                            </div>
-                        </div>
-
-                        <!-- Unnamed (Inline Frame) -->
-                        <div id="u69" class="ax_default">
-                            <iframe id="u69_input" scrolling="auto" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tab Label 3 (Rectangle) -->
-            <div id="u70" class="ax_default box_3 selected" data-label="Tab Label 3" selectiongroup="Tabs">
-                <div id="u70_div" class="selected"></div>
-                <div id="u70_text" class="text ">
-                    <p><span>About Team</span></p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script src="{% static 'resources/scripts/axure/ios.js' %}"></script>
+    <!-- SCRIPTS -->
+    <!-- JQuery -->
+    <script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="{% static 'js/popper.min.js' %}"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="{% static 'js/mdb.min.js' %}"></script>
 </body>
 
 </html>
