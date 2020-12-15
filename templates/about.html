@@ -4,8 +4,7 @@
 <head>
     <title>about</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    {% load static %}
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" /> {% load static %}
     <link href="{% static 'resources/css/axure_rp_page.css' %}" type="text/css" rel="stylesheet" />
     <link href="{% static 'data/styles.css' %}" type="text/css" rel="stylesheet" />
     <link href="{% static 'files/about/styles.css' %}" type="text/css" rel="stylesheet" />
@@ -43,7 +42,8 @@
     <script src="{% static 'files/about/data.js' %}"></script>
     <script type="text/javascript">
         $axure.utils.getTransparentGifPath = function() {
-            return "{% static 'resources/images/transparent.gif' %}"";
+            return "{% static 'resources/images/transparent.gif' %}"
+            ";
         };
         $axure.utils.getOtherPath = function() {
             return "{% static 'resources/Other.html' %}";
@@ -416,7 +416,7 @@
 
                         <!-- Unnamed (Rectangle) -->
                         <div id="u67" class="ax_default box_1">
-                            <img id="u67_img" class="img " src="{% static 'images/about/u27.svg' %}" />
+                            <img id="u67_img" class="img " src="images/about/u27.svg" />
                             <div id="u67_text" class="text " style="display:none; visibility: hidden">
                                 <p></p>
                             </div>
