@@ -30,12 +30,21 @@
             <img class="img-fluid" src="{{ upload }}" />
         </div>
         <div class="col-md-6 col-xs-5">
-            <h4>Analysis Outputs</h4>
-            <h5>Suspected copy-paste modification is annotated in the below image if there is any</h5>
-            <img class="img-fluid" src="{{manipulation}}" />
-            <h5>ELA Analysis Result</h5>
-            <img class="img-fluid" src="{{ela}}" />
-            {% endfor %}
+            {% if status %}
+                <h4>Analysis Outputs</h4>
+                {% if manipulation is None %}
+                    <h5>Did not find suspected copy-paste modification</h5>
+                {% else %}
+                    <h5>Suspected copy-paste modification is annotated in the image below</h5>
+                    <img class="img-fluid" src="{{manipulation}}" />
+                {% endif %}
+                {% if ela is not None %}
+                    <h5>ELA analysis result</h5>
+                    <img class="img-fluid" src="{{ela}}" />
+                {% endif %}
+            {% else %}
+                <h4>Please wait for analysis outputs. We will check the submission with our autotests in 2 hours.</h4>
+            {% endif %}
         </div>
     </div>
     <div class="row">

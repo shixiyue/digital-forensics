@@ -70,10 +70,12 @@
                         <p>Last Passed</p>
                         {% elif submission.status == 5 and i.certified == 2 %}
                         <p>Last Failed</p>
-                        {% elif i.certified == 1 %}
-                        <p>Passed Tests</p>
                         {% elif i.certified == 2 %}
+                        <p>Passed Tests</p>
+                        {% elif i.certified == 3 %}
                         <p>Failed Tests</p>
+                        {% elif i.certified == 4 %}
+                        <p>Appealing</p>
                         {% endif %}
                     </div>
                 </div>

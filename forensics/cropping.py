@@ -20,7 +20,7 @@ class CroppingModel:
         model_weights_location,
         cpu_only=True,
         model_type="COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml",
-        threshold=0.85,
+        threshold=0.7,
     ):
         self.cfg = get_cfg()
 
@@ -72,7 +72,6 @@ class CroppingModel:
     # Function that gets medical image boxes results in format [[x0, y0, x1, y1], ...]
     def medical_bounding_boxes(self, img_id, img_name):
         from .models import Image, Crop
-        from .signals import run_manipulation_script
 
         # Load image
         img = cv2.imread(img_name)

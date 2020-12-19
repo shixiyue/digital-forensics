@@ -26,77 +26,40 @@ window.addEventListener('DOMContentLoaded', function () {
   var filename;
 
   input.addEventListener('change', function (e) {
+    $alert.removeClass('alert-success alert-warning');
+
     var files = e.target.files;
-    var done = function (url) {
-      input.value = '';
-      image.src = url;
-      $alert.hide();
-      $modal.modal('show');
-    };
     var reader;
 
     if (files && files.length > 0) {
       file = files[0];
       filename = file.name;
-      
+
       extension = filename.split('.').pop();
-      if (extension  === "pdf" || extension === "PDF") {
+      if (extension === "pdf" || extension === "PDF") {
         formData.append('pdf', file);
       }
-      else if (extension === 'tiff' || extension === 'tif') {
+      else {
+        formData.append('image-' + i, file, filename);
+        i++;
         reader = new FileReader();
-        reader.onload = (function (theFile) {
-          return function (e) {
-            var buffer = e.target.result;
-            var tiff = new Tiff({ buffer: buffer });
-            var canvas = tiff.toCanvas();
-            done(canvas.toDataURL());
+        if (extension === 'tiff' || extension === 'tif') {
+          reader.onload = (function (theFile) {
+            return function (e) {
+              var buffer = e.target.result;
+              var tiff = new Tiff({ buffer: buffer });
+              var canvas = tiff.toCanvas();
+              addImage(canvas.toDataURL());
+            };
+          })(file);
+          reader.readAsArrayBuffer(file);
+        } else {
+          reader.onload = function (e) {
+            addImage(e.target.result);
           };
-        })(file);
-        reader.readAsArrayBuffer(file);
-      } else if (URL) {
-        done(URL.createObjectURL(file));
-      } else if (FileReader) {
-        reader = new FileReader();
-        reader.onload = function (e) {
-          done(reader.result);
-        };
+        }
         reader.readAsDataURL(file);
       }
-    }
-  });
-
-  $modal.on('shown.bs.modal', function () {
-    if (cropper !== null) {
-      cropper.destroy();
-    }
-    cropper = new Cropper(image, {
-      viewMode: 2,
-      rotatable: false,
-      scalable: false,
-      autoCropArea: 1
-    });
-  });
-
-  document.getElementById('crop').addEventListener('click', function () {
-    $modal.modal('hide');
-
-    if (cropper) {
-      var dimension = cropper.getData();
-
-      var canvas = cropper.getCroppedCanvas({
-        width: dimension.width,
-        height: dimension.height,
-      });
-      canvas.toBlob(function (blob) {
-        formData.append('image-' + i, blob, filename);
-        i++;
-        canvas = cropper.getCroppedCanvas();
-        addImage(canvas.toDataURL());
-        cropper.destroy();
-        cropper = null;
-      });
-      $alert.removeClass('alert-success alert-warning');
     }
   });
 
@@ -116,7 +79,7 @@ window.addEventListener('DOMContentLoaded', function () {
       data: formData,
       async: false,
       success: function () {
-        $alert.show().addClass('alert-success').text('Upload success, redircting to adjust crops in 8 seconds...');
+        $alert.show().addClass('alert-success').text('Upload success, redirecting to adjust crops in 8 seconds...');
         redirect(8, $alert);
       },
       error: function () {

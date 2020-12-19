@@ -279,17 +279,22 @@ def submission_admin_view(request, id):
 def analysis_view(request, sub_id, crop_id):
     crop = Crop.objects.get(id=crop_id)
     upload = crop.image.url
-    manipulation = AnalysisCrop.objects.get(
+    status = crop.certified != 0
+    manipulation = AnalysisCrop.objects.filter(
         crop=crop_id, analysis_type=AnalysisType.MANIPULATION
-    ).analysis_image.url
-    ela = AnalysisCrop.objects.get(
+    ).first()
+    if manipulation:
+        manipulation = manipulation.analysis_image.url
+    ela = AnalysisCrop.objects.filter(
         crop=crop_id, analysis_type=AnalysisType.ELA
-    ).analysis_image.url
+    ).first()
+    if ela:
+        ela = ela.analysis_image.url
 
     return render(
         request,
         "analysis.html",
-        {"sub_id": sub_id, "upload": upload, "manipulation": manipulation, "ela": ela},
+        {"sub_id": sub_id, "upload": upload, "manipulation": manipulation, "ela": ela, "status": status},
     )
 
 
@@ -310,17 +315,21 @@ def analysis_admin_view(request, sub_id, crop_id):
             # TODO: cascade to image certified status
 
     upload = crop.image.url
-    dirname = os.path.dirname(upload)
-    manipulation = AnalysisCrop.objects.get(
+    status = crop.certified != 0
+    manipulation = AnalysisCrop.objects.filter(
         crop=crop_id, analysis_type=AnalysisType.MANIPULATION
-    ).analysis_image.url
-    ela = AnalysisCrop.objects.get(
+    ).first()    
+    if manipulation:
+        manipulation = manipulation.analysis_image.url
+    ela = AnalysisCrop.objects.filter(
         crop=crop_id, analysis_type=AnalysisType.ELA
-    ).analysis_image.url
+    ).first()
+    if ela:
+        ela = ela.analysis_image.url
     return render(
         request,
         "analysis_admin.html",
-        {"sub_id": sub_id, "upload": upload, "manipulation": manipulation, "ela": ela},
+        {"sub_id": sub_id, "upload": upload, "manipulation": manipulation, "ela": ela, "status": status},
     )
 
 
