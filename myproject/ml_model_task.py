@@ -4,6 +4,7 @@ from celery import Task
 from forensics.cropping import CroppingModel
 from django.conf import settings
 
+
 class CroppingModelPredictionTask(Task):
     """Celery Task for making ML Model predictions."""
 

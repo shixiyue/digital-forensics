@@ -7,6 +7,7 @@ from .models import Image, Crop
 from myproject.settings import PROJECT_ROOT
 from myproject.celery import celery_app
 
+
 @receiver(post_save, sender=Image)
 def run_cropping_script(sender, instance, created, **kwargs):
     if created:

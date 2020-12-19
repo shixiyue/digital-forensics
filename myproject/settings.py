@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     "django_extensions",
     "django_tables2",
     "storages",
-    "rest_framework.authtoken"
+    "rest_framework.authtoken",
 ]
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # your size limit in bytes
@@ -59,7 +59,9 @@ EMAIL_SUBJECT_PREFIX = "[Digital Forensics:]"
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated",],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.SessionAuthentication",
     ),
@@ -102,17 +104,18 @@ WSGI_APPLICATION = "myproject.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "myproject", 
+        "NAME": "myproject",
         "USER": "postgres",
-        "PASSWORD": "spec2020", # spec2020
+        "PASSWORD": "spec2020",  # spec2020
         "HOST": "digital-forensics.cixsf8fuc6t1.us-east-2.rds.amazonaws.com",
         "PORT": "5432",
     }
 }
 
 import dj_database_url
+
 db_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(db_from_env)
+DATABASES["default"].update(db_from_env)
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -121,9 +124,15 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
 ]
 
 
@@ -140,8 +149,8 @@ USE_L10N = True
 
 USE_TZ = True
 
-#MEDIA_URL = "/media/"
-#MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+# MEDIA_URL = "/media/"
+# MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # celery
 CELERY_BROKER_URL = "redis://localhost:6379"
@@ -151,24 +160,24 @@ CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_SERIALIZER = "json"
 
 # aws
-AWS_ACCESS_KEY_ID = 'AKIAZO2I5F3JQOCMGFBS'
-AWS_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'digitalforensics'
-AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
-AWS_S3_REGION_NAME = 'us-east-2'
+AWS_ACCESS_KEY_ID = "AKIAZO2I5F3JQOCMGFBS"
+AWS_SECRET_ACCESS_KEY = "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"
+AWS_STORAGE_BUCKET_NAME = "digitalforensics"
+AWS_S3_CUSTOM_DOMAIN = "%s.s3.amazonaws.com" % AWS_STORAGE_BUCKET_NAME
+AWS_S3_REGION_NAME = "us-east-2"
 AWS_S3_OBJECT_PARAMETERS = {
-    'CacheControl': 'max-age=86400',
+    "CacheControl": "max-age=86400",
 }
 
 AWS_QUERYSTRING_AUTH = True
 AWS_DEFAULT_ACL = None
-AWS_STATIC_LOCATION = 'static'
-STATICFILES_STORAGE = 'myproject.storage_backends.StaticStorage'
+AWS_STATIC_LOCATION = "static"
+STATICFILES_STORAGE = "myproject.storage_backends.StaticStorage"
 STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_STATIC_LOCATION)
 
-AWS_MEDIA_LOCATION = 'media'
+AWS_MEDIA_LOCATION = "media"
 MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_MEDIA_LOCATION)
-DEFAULT_FILE_STORAGE = 'myproject.storage_backends.MediaStorage'
+DEFAULT_FILE_STORAGE = "myproject.storage_backends.MediaStorage"
 
 MODELS_DIR = PROJECT_ROOT + "/models/"
 CROPPING_MODEL = MODELS_DIR + "cropping_model.pth"

@@ -4,6 +4,7 @@ import uuid
 
 from .utils import upload_file_name, crop_file_name, analysis_file_name
 
+
 class WebsiteUserManager(BaseUserManager):
     def create_superuser(self, email, password):
         user = self.model(
@@ -16,6 +17,7 @@ class WebsiteUserManager(BaseUserManager):
         user.status = 1
         user.save(using=self._db)
         return user
+
 
 class WebsiteUser(AbstractUser):
     objects = WebsiteUserManager()
@@ -32,6 +34,7 @@ class WebsiteUser(AbstractUser):
 
     status = models.IntegerField(choices=Status.choices, default=0)
     REQUIRED_FIELDS = []
+
 
 class Submission(models.Model):
     user = models.ForeignKey(
@@ -71,12 +74,13 @@ class Submission(models.Model):
 
     def email(self):
         return self.user.email
-    
+
     def admin_email(self):
         if self.admin is not None:
             return self.admin.email
         else:
             return "None"
+
 
 class ImageStatus(models.IntegerChoices):
     NOT_CONFIRMED = -1
@@ -86,6 +90,7 @@ class ImageStatus(models.IntegerChoices):
     MANIPULATED = 3
     REDO = 4
 
+
 class Image(models.Model):
     id = models.IntegerField(primary_key=True, editable=False)
     submission = models.ForeignKey(Submission, on_delete=models.CASCADE)
@@ -94,7 +99,8 @@ class Image(models.Model):
     certificate_link = models.URLField(blank=True)
 
     def __str__(self):
-        return '%s_%d' % (self.submission.id, self.id)
+        return "%s_%d" % (self.submission.id, self.id)
+
 
 class Crop(models.Model):
     original_image = models.ForeignKey(Image, on_delete=models.CASCADE)
@@ -106,21 +112,25 @@ class Crop(models.Model):
     certified = models.IntegerField(choices=ImageStatus.choices, default=0)
 
     def __str__(self):
-        return '%s_%d' % (self.original_image, self.id)
+        return "%s_%d" % (self.original_image, self.id)
+
 
 class AnalysisType(models.IntegerChoices):
     MANIPULATION = 0
     ELA = 1
+
 
 class AnalysisCrop(models.Model):
     crop = models.ForeignKey(Crop, on_delete=models.CASCADE)
     analysis_image = models.FileField(upload_to=analysis_file_name)
     analysis_type = models.IntegerField(choices=AnalysisType.choices)
 
+
 class AnalysisImage(models.Model):
     image = models.ForeignKey(Image, on_delete=models.CASCADE)
     analysis_image = models.FileField(upload_to=analysis_file_name)
     analysis_type = models.IntegerField(choices=AnalysisType.choices)
+
 
 class Similarity(models.Model):
     crop_1 = models.ForeignKey(Crop, on_delete=models.CASCADE)

@@ -10,7 +10,9 @@ webhook = Webhook(app)  # Defines '/postreceive' endpoint
 def on_push(data):
     if data["commits"][0]["distinct"] == True:
         try:
-            cmd_output = subprocess.check_output(["git", "pull", "origin", "master"],)
+            cmd_output = subprocess.check_output(
+                ["git", "pull", "origin", "master"],
+            )
             return jsonify({"msg": str(cmd_output)})
         except subprocess.CalledProcessError as error:
             return jsonify({"msg": str(error.output)})

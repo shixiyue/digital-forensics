@@ -4,6 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from .models import WebsiteUser
 from .models import Image
 
+
 class SignUpForm(UserCreationForm):
     email = forms.EmailField(max_length=150)
 
@@ -21,6 +22,7 @@ class SignUpForm(UserCreationForm):
         self.fields["email"].widget.attrs["class"] = "form-control"
         self.fields["password1"].widget.attrs["class"] = "form-control"
         self.fields["password2"].widget.attrs["class"] = "form-control"
+
 
 class LoginForm(AuthenticationForm):
     email = forms.EmailField(max_length=150)

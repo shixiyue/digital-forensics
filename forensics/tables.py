@@ -3,6 +3,7 @@ from django_tables2.utils import A
 
 from .models import Submission
 
+
 class SubmissionTable(tables.Table):
     id = tables.Column(verbose_name="Submission ID")
     submission_time = tables.DateTimeColumn(format="Y-m-d", verbose_name="Date")
@@ -45,6 +46,7 @@ class SubmissionTable(tables.Table):
         )
         attrs = {"style": "background-color: #ffffff;"}
 
+
 class SubmissionAdminTable(tables.Table):
     id = tables.Column(verbose_name="Submission ID")
     submission_time = tables.DateTimeColumn(format="Y-m-d", verbose_name="Date")
@@ -58,9 +60,7 @@ class SubmissionAdminTable(tables.Table):
         args=[A("pk")],
         attrs={"a": {"style": "color: #0275d8;"}},
     )
-    email = tables.Column(
-        accessor=A("email"), verbose_name="User Email"
-    )
+    email = tables.Column(accessor=A("email"), verbose_name="User Email")
     admin_email = tables.Column(
         accessor=A("admin_email"), verbose_name="Last Admin Processed"
     )

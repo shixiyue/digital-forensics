@@ -11,7 +11,6 @@ import numpy as np
 import matplotlib.cm as mplcm
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
-from celery import shared_task
 
 from PIL import Image, ImageChops, ImageEnhance
 import sys
@@ -20,8 +19,6 @@ import threading
 import argparse
 
 import matplotlib
-
-from django.core.files.base import File
 
 matplotlib.use("agg")
 
@@ -98,7 +95,11 @@ def get_base_images(target_fn):
 
 
 def get_binary(target_grey, thresh=200, maxval=255):
-    blur_target = cv2.GaussianBlur(src=target_grey, ksize=(5, 5), sigmaX=0.0,)
+    blur_target = cv2.GaussianBlur(
+        src=target_grey,
+        ksize=(5, 5),
+        sigmaX=0.0,
+    )
     (_, target_binary) = cv2.threshold(
         src=blur_target, thresh=thresh, maxval=maxval, type=cv2.THRESH_BINARY
     )
@@ -141,7 +142,7 @@ def draw_contours(target_overlay, contours, dirname, color=(255, 0, 0)):
 
 def get_most_similar(df_matchDist, threshold=0.1):
     """
-    from the distance matrix, identify all contour pairs who differ less than the threshold. 
+    from the distance matrix, identify all contour pairs who differ less than the threshold.
     """
     df_filtered = df_matchDist[df_matchDist < threshold]
     df_reduced = df_filtered.dropna(how="all")
@@ -365,7 +366,8 @@ def find_discontinuities(
     filename = "{}/discontinuity_detection.png".format(dirname)
     plt.savefig(filename, bbox_inches="tight")
     f = open(filename, "rb")
-    analysis = AnalysisCrop.objects.create(crop=Crop.objects.get(id=img_id), analysis_type=1)
+    analysis = AnalysisCrop.objects.create(
+        crop=Crop.objects.get(id=img_id), analysis_type=1
+    )
     analysis.analysis_image = File(f)
     analysis.save()
-        

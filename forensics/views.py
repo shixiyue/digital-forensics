@@ -37,20 +37,37 @@ import PIL
 
 from .forms import SignUpForm, LoginForm
 from .tokens import account_activation_token
-from .models import WebsiteUser, Image, Submission, Crop, ImageStatus, AnalysisCrop, AnalysisType
+from .models import (
+    WebsiteUser,
+    Image,
+    Submission,
+    Crop,
+    ImageStatus,
+    AnalysisCrop,
+    AnalysisType,
+)
 from .tables import SubmissionTable, SubmissionAdminTable
-from .serializers import ImageSerializer, SubmissionSerializer, CropSerializer, AnalysisCropSerializer
+from .serializers import (
+    ImageSerializer,
+    SubmissionSerializer,
+    CropSerializer,
+    AnalysisCropSerializer,
+)
 from .mixin import StaffRequiredMixin
 from myproject.settings import PROJECT_ROOT
+
 
 def index_view(request):
     return render(request, "index.html")
 
+
 def about_view(request):
     return render(request, "about.html")
 
+
 def certificate_demo(request):
     return render(request, "certificate.html")
+
 
 def signup_view(request):
     if request.user.is_authenticated:
@@ -85,8 +102,10 @@ def signup_view(request):
         form = SignUpForm()
     return render(request, "signup.html", {"form": form})
 
+
 def activation_sent_view(request):
     return render(request, "activation_sent.html")
+
 
 def activate(request, uidb64, token):
     try:
@@ -103,6 +122,7 @@ def activate(request, uidb64, token):
         return redirect("index")
     else:
         return render(request, "activation_invalid.html")
+
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -126,44 +146,48 @@ def login_view(request):
         form = LoginForm()
     return render(request, "login.html", {"form": form})
 
+
 @login_required(login_url="/login/")
 def logout_view(request):
     logout(request)
     return render(request, "index.html")
 
+
 @login_required(login_url="/login/")
 def dashboard_view(request):
     return render(request, "dashboard.html")
 
+
 @login_required(login_url="/login/")
 def data_view(request):
     return render(request, "more_data.html")
+
 
 @login_required(login_url="/login/")
 def adjust_view(request):
     disabled = True
     if request.method == "POST":
         disabled = False
-        if request.POST.get('remove'):
-            id = int(request.POST.get('id'))
+        if request.POST.get("remove"):
+            id = int(request.POST.get("id"))
             Crop.objects.filter(id=id).delete()
-        elif request.POST.get('adjust'):
-            x = int(float(request.POST.get('x')))
-            y = int(float(request.POST.get('y')))
-            width = int(float(request.POST.get('width')))
-            height = int(float(request.POST.get('height')))
+        elif request.POST.get("adjust"):
+            x = int(float(request.POST.get("x")))
+            y = int(float(request.POST.get("y")))
+            width = int(float(request.POST.get("width")))
+            height = int(float(request.POST.get("height")))
 
-            id = int(request.POST.get('id'))
+            id = int(request.POST.get("id"))
             if id < 0:
-                original_image = Image.objects.get(id=int(request.POST.get('image_id')))
+                original_image = Image.objects.get(id=int(request.POST.get("image_id")))
                 crop = Crop.objects.create(original_image=original_image)
             else:
                 crop = Crop.objects.get(id=id)
             dirname = f"{PROJECT_ROOT}/temp/{crop.original_image.submission.id}"
-            filename = os.path.join(dirname, f'{crop.original_image.id}')
-            image = PIL.Image.open(filename+".jpg")
-            image = image.crop((x, y, x+width, y+height))
-            image = image.convert('RGB')
+            filename = os.path.join(dirname, f"{crop.original_image.id}")
+            image = PIL.Image.open(filename + ".jpg")
+            image = image.crop((x, y, x + width, y + height))
+            image = image.convert("RGB")
             filename = filename + "/updated.jpg"
             image.save(filename)
             f = open(filename, "rb")
@@ -171,20 +195,31 @@ def adjust_view(request):
             crop.image.delete(save=False)
             crop.image = File(f)
             crop.save()
-        elif request.POST.get('next'):
-            image = Image.objects.filter(certified=ImageStatus.NOT_CONFIRMED, submission__user=request.user).order_by("id")[0]
+        elif request.POST.get("next"):
+            image = Image.objects.filter(
+                certified=ImageStatus.NOT_CONFIRMED, submission__user=request.user
+            ).order_by("id")[0]
             image.certified = ImageStatus.DEFAULT
             image.save()
 
-    images = Image.objects.filter(certified=ImageStatus.NOT_CONFIRMED, submission__user=request.user).order_by("id")
+    images = Image.objects.filter(
+        certified=ImageStatus.NOT_CONFIRMED, submission__user=request.user
+    ).order_by("id")
     if len(images) == 0:
         return render(request, "all_set.html")
     image = images[0]
     crops = list(Crop.objects.filter(original_image=image.id).order_by("id"))
     return render(
-        request, 
-        "adjust_crop.html", 
-        {"submission_id": image.submission.id, "image": image, "crops": crops, "disabled": disabled})
+        request,
+        "adjust_crop.html",
+        {
+            "submission_id": image.submission.id,
+            "image": image,
+            "crops": crops,
+            "disabled": disabled,
+        },
+    )
+
 
 @login_required(login_url="/login/")
 def submission_details_view(request, id):
@@ -199,6 +234,7 @@ def submission_details_view(request, id):
         {"id": id, "submission": submission, "crops": crops},
     )
 
+
 @staff_member_required
 def submission_admin_view(request, id):
     submission = Submission.objects.get(id=id)
@@ -212,7 +248,10 @@ def submission_admin_view(request, id):
         for image in images:
             if image.certified == ImageStatus.CERTIFIED:
                 num_cert += 1
-            elif image.certified == ImageStatus.DEFAULT or image.certified == ImageStatus.PROCESSED:
+            elif (
+                image.certified == ImageStatus.DEFAULT
+                or image.certified == ImageStatus.PROCESSED
+            ):
                 in_progress = True
     if request.method == "POST":
         if in_progress:
@@ -226,19 +265,33 @@ def submission_admin_view(request, id):
     return render(
         request,
         "submission_admin.html",
-        {"id": id, "submission": submission, "crops": crops, "num_cert": num_cert, "total": len(images)},
+        {
+            "id": id,
+            "submission": submission,
+            "crops": crops,
+            "num_cert": num_cert,
+            "total": len(images),
+        },
     )
+
 
 @login_required(login_url="/login/")
 def analysis_view(request, sub_id, crop_id):
     crop = Crop.objects.get(id=crop_id)
     upload = crop.image.url
-    manipulation = AnalysisCrop.objects.get(crop=crop_id, analysis_type=AnalysisType.MANIPULATION).analysis_image.url
-    ela = AnalysisCrop.objects.get(crop=crop_id, analysis_type=AnalysisType.ELA).analysis_image.url
+    manipulation = AnalysisCrop.objects.get(
+        crop=crop_id, analysis_type=AnalysisType.MANIPULATION
+    ).analysis_image.url
+    ela = AnalysisCrop.objects.get(
+        crop=crop_id, analysis_type=AnalysisType.ELA
+    ).analysis_image.url
 
     return render(
-        request, "analysis.html", {"sub_id": sub_id, "upload": upload, "manipulation": manipulation, "ela": ela}
+        request,
+        "analysis.html",
+        {"sub_id": sub_id, "upload": upload, "manipulation": manipulation, "ela": ela},
     )
+
 
 @staff_member_required
 def analysis_admin_view(request, sub_id, crop_id):
@@ -258,11 +311,18 @@ def analysis_admin_view(request, sub_id, crop_id):
 
     upload = crop.image.url
     dirname = os.path.dirname(upload)
-    manipulation = AnalysisCrop.objects.get(crop=crop_id, analysis_type=AnalysisType.MANIPULATION).analysis_image.url
-    ela = AnalysisCrop.objects.get(crop=crop_id, analysis_type=AnalysisType.ELA).analysis_image.url
+    manipulation = AnalysisCrop.objects.get(
+        crop=crop_id, analysis_type=AnalysisType.MANIPULATION
+    ).analysis_image.url
+    ela = AnalysisCrop.objects.get(
+        crop=crop_id, analysis_type=AnalysisType.ELA
+    ).analysis_image.url
     return render(
-        request, "analysis_admin.html", {"sub_id": sub_id, "upload": upload, "manipulation": manipulation, "ela": ela}
+        request,
+        "analysis_admin.html",
+        {"sub_id": sub_id, "upload": upload, "manipulation": manipulation, "ela": ela},
     )
+
 
 class SubmissionViewSet(viewsets.ModelViewSet):
     queryset = Submission.objects.all()
@@ -273,36 +333,45 @@ class SubmissionViewSet(viewsets.ModelViewSet):
     def submit(self, request):
         request.data.pop("csrfmiddlewaretoken", None)
         try:
-            request.data.pop('apply')
+            request.data.pop("apply")
             require_certificate = 1
         except:
             require_certificate = 0
-        submission = Submission.objects.create(user=request.user, status=require_certificate)
+        submission = Submission.objects.create(
+            user=request.user, status=require_certificate
+        )
         dirname = f"{PROJECT_ROOT}/temp/{submission.id}"
         if not os.path.exists(dirname):
             os.makedirs(dirname)
-        if 'pdf' in request.data:
-            upload = request.data['pdf']
-            with open(dirname + "/upload.pdf", 'wb+') as f:
+        if "pdf" in request.data:
+            upload = request.data["pdf"]
+            with open(dirname + "/upload.pdf", "wb+") as f:
                 for chunk in upload.chunks():
                     f.write(chunk)
-            subprocess.call(shlex.split('/home/ubuntu/myprojectdir/extract.sh {}'.format(dirname)))
+            subprocess.call(
+                shlex.split("/home/ubuntu/myprojectdir/extract.sh {}".format(dirname))
+            )
             for output in sorted(os.listdir(dirname)):
                 file_name = os.path.join(dirname, output)
                 f = open(file_name, "rb")
-                new_id = Image.objects.latest('id').id + 1
-                image = Image.objects.create(id=new_id, submission=submission, image=File(f))
+                new_id = Image.objects.latest("id").id + 1
+                image = Image.objects.create(
+                    id=new_id, submission=submission, image=File(f)
+                )
                 new_name = os.path.join(dirname, f"{image.id}.jpg")
                 os.rename(file_name, new_name)
         else:
             for upload in request.data.values():
-                new_id = Image.objects.latest('id').id + 1
-                with open(os.path.join(dirname, str(new_id) + ".jpg"), 'wb+') as f:
+                new_id = Image.objects.latest("id").id + 1
+                with open(os.path.join(dirname, str(new_id) + ".jpg"), "wb+") as f:
                     for chunk in upload.chunks():
                         f.write(chunk)
                 upload.seek(0)
-                image = Image.objects.create(id=new_id, submission=submission, image=upload)
+                image = Image.objects.create(
+                    id=new_id, submission=submission, image=upload
+                )
         return HttpResponse(status=201)
+
 
 class MoreDataViewSet(viewsets.ModelViewSet):
     queryset = Submission.objects.all()
@@ -314,6 +383,7 @@ class MoreDataViewSet(viewsets.ModelViewSet):
         request.data.pop("csrfmiddlewaretoken", None)
         return HttpResponse(status=201)
 
+
 class HistoryView(LoginRequiredMixin, tables.SingleTableView):
     login_url = "/login/"
     table_class = SubmissionTable
@@ -321,6 +391,7 @@ class HistoryView(LoginRequiredMixin, tables.SingleTableView):
 
     def get_queryset(self):
         return Submission.objects.filter(user=self.request.user).order_by("-id")
+
 
 class HistoryAdminView(StaffRequiredMixin, tables.SingleTableView):
     login_url = "/login/"
@@ -330,10 +401,12 @@ class HistoryAdminView(StaffRequiredMixin, tables.SingleTableView):
     def get_queryset(self):
         return Submission.objects.order_by("-id")
 
+
 class UnprocessedCropsView(APIView):
     """
     List all unprocessed crops.
     """
+
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -342,10 +415,12 @@ class UnprocessedCropsView(APIView):
         serializer = CropSerializer(crops, many=True)
         return Response(serializer.data)
 
+
 class AnalysisCropView(APIView):
     """
     List all unprocessed crops.
     """
+
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -358,9 +433,11 @@ class AnalysisCropView(APIView):
         serializer = AnalysisCropSerializer(data=request.data)
         if serializer.is_valid():
             data = serializer.data
-            crop = Crop.objects.get(id=data['crop'])
-            manipulation = AnalysisCrop.objects.create(crop=crop, analysis_type=data['analysis_type'])
-            manipulation.analysis_image = File(request.FILES['analysis_image'])
+            crop = Crop.objects.get(id=data["crop"])
+            manipulation = AnalysisCrop.objects.create(
+                crop=crop, analysis_type=data["analysis_type"]
+            )
+            manipulation.analysis_image = File(request.FILES["analysis_image"])
             manipulation.save()
             crop.certified = ImageStatus.PROCESSED
             crop.save()
