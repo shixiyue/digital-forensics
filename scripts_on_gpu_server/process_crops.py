@@ -2,9 +2,13 @@ import urllib.request
 import os
 import json
 import requests
+import shutil
 
 from manipulation import ManipulationModel
 from algo import ela
+from logmodule import LogModule
+
+logger = logmodule.LogModule()
 
 DIRECTORY = "temp"
 MODEL_LOCATION = "../models/manipulation_model.pth"
@@ -20,12 +24,15 @@ def setup_session():
 
 
 def get_list_of_unprocessed_crops(session):
-    response = session.get(get_crops_url, timeout=(5, 20))
-    if response.ok:
-        data = json.loads(response.content)
-        return data
-    else:
-        response.raise_for_status()
+    try:
+        response = session.get(get_crops_url, timeout=(5, 20))
+        if response.ok:
+            data = json.loads(response.content)
+            return data
+        else:
+            logger.error("Failed to retrieve list of unprocessed crops: " + response.status_code)
+    except Exception as e:
+        logger.error("Exception: " + str(e))
 
 
 def download_image(url):
@@ -44,15 +51,18 @@ def download_image(url):
 def post_analysis_img(img_name, analysis_type):
     files = {"analysis_image": ("manipulation.jpg", open(img_name, "rb"), "image/jpg")}
     data = {"crop": crop["id"], "analysis_type": analysis_type}
-    session.post(post_analysis_url, files=files, data=data)
-    # TODO: Add logger
+    response = session.post(post_analysis_url, files=files, data=data)
+    if response.ok:
+        logger.info("Upload analysis image, " + str(data))
+    else:
+        logger.error("Failed to upload analysis image, " + response.status_code)
 
 
 if __name__ == "__main__":
     session = setup_session()
     unprocessed_crops = get_list_of_unprocessed_crops(session)
     manipulation_model = ManipulationModel(MODEL_LOCATION)
-    for crop in unprocessed_crops[:1]:
+    for crop in unprocessed_crops:
         image_url = crop["image"]
         img_name = download_image(image_url)
 
@@ -61,3 +71,4 @@ if __name__ == "__main__":
             post_analysis_img(manipulation_img, "0")
         ela_img = ela(img_name)
         post_analysis_img(ela_img, "1")
+    shutil.rmtree(DIRECTORY)    
