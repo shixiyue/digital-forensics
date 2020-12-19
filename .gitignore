@@ -1,6 +1,8 @@
 # exclude everything
 media/uploads/*
 models/*
+myprojectenv/
+migrations/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

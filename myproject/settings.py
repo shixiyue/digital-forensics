@@ -100,14 +100,31 @@ WSGI_APPLICATION = "myproject.wsgi.application"
 
 DATABASES = {
     "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "myproject", 
+        "USER": "postgres",
+        "PASSWORD": "spec2020", # spec2020
+        "HOST": "digital-forensics.cixsf8fuc6t1.us-east-2.rds.amazonaws.com",
+        "PORT": "5432",
+    }
+}
+
+import dj_database_url
+db_from_env = dj_database_url.config(conn_max_age=600)
+DATABASES['default'].update(db_from_env)
+
+"""
+DATABASES = {
+    "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "myproject",
-        "USER": "myprojectuser",
-        "PASSWORD": "digitalforensics",
+        "NAME": "myproject", 
+        "USER": "myprojectuser", # postgres
+        "PASSWORD": "digitalforensics", # spec2020
         "HOST": "localhost",
         "PORT": "",
     }
 }
+"""
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -167,3 +184,4 @@ DEFAULT_FILE_STORAGE = 'myproject.storage_backends.MediaStorage'
 
 MODELS_DIR = PROJECT_ROOT + "/models/"
 CROPPING_MODEL = MODELS_DIR + "cropping_model.pth"
+MANIPULATION_MODEL = MODELS_DIR + "manipulation_model.pth"

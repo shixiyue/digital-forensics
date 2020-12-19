@@ -21,6 +21,8 @@ import argparse
 
 import matplotlib
 
+from django.core.files.base import File
+
 matplotlib.use("agg")
 
 
@@ -37,7 +39,7 @@ def flatten_rgba(im):
     return background
 
 
-def ela(org_fname, dirname, quality=35):
+def ela(img_id, org_fname, dirname, quality=35):
     """
     Generates an ELA image on save_dir.
     Params:
@@ -48,6 +50,8 @@ def ela(org_fname, dirname, quality=35):
     Adapted from:
     https://gist.github.com/cirocosta/33c758ad77e6e6531392
     """
+    from .models import Crop, AnalysisCrop
+
     tmp_fname = os.path.join(dirname, "tmp_ela.jpg")
     ela_fname = os.path.join(dirname, "0-ela.png")
 
@@ -69,6 +73,10 @@ def ela(org_fname, dirname, quality=35):
 
     ela_im.save(ela_fname)
     os.remove(tmp_fname)
+    f = open(ela_fname, "rb")
+    analysis = AnalysisCrop.objects.create(crop=Crop.objects.get(id=img_id), analysis_type=1)
+    analysis.analysis_image = File(f)
+    analysis.save()
 
 
 def apply_cmap(img, cmap=mplcm.autumn):
@@ -206,7 +214,7 @@ def get_similar_bands(
     return band_images, close_contour_sets
 
 
-def plot_colored_bands(sorted_idx, band_images, dirname):
+def plot_colored_bands(img_id, sorted_idx, band_images, dirname):
     """
     plot ordered set of band images
 
@@ -262,6 +270,7 @@ def offset_image(coord, band_images, bid, ax, leaves):
 
 
 def analyse_image(
+    img_id,
     target_fn,
     dirname,
     binmin=100,
@@ -283,6 +292,7 @@ def analyse_image(
 
     # highlight background discontinuities
     find_discontinuities(
+        img_id,
         target_grey,
         ksize=(3, 13),
         min_edge_threshold=15,
@@ -318,10 +328,11 @@ def analyse_image(
         if len(targets) > 0:
             src = [source]
             bands = src + targets
-            plot_colored_bands(bands, band_images, dirname)
+            plot_colored_bands(img_id, bands, band_images, dirname)
 
 
 def find_discontinuities(
+    img_id,
     target_grey,
     ksize=(3, 13),
     min_edge_threshold=15,
@@ -358,15 +369,20 @@ def find_discontinuities(
     plt.gca().invert_yaxis()
 
     # save image
-    plt.savefig("{}/1-discontinuity_detection.png".format(dirname), bbox_inches="tight")
+    filename = "{}/discontinuity_detection.png".format(dirname)
+    plt.savefig(filename, bbox_inches="tight")
+    f = open(filename, "rb")
+    analysis = AnalysisCrop.objects.create(crop=Crop.objects.get(id=img_id), analysis_type=1)
+    analysis.analysis_image = File(f)
+    analysis.save()
 
 
 @shared_task
-def check_image(org_fname):
-    dirname = os.path.dirname(org_fname)
-    ela(org_fname, dirname, quality=35)
-    try:
-        analyse_image(org_fname, dirname)
+def check_image(img_id, img_name):
+    dirname = os.path.dirname(img_name)
+    ela(img_id, img_name, dirname, quality=35)
+    '''try:
+        analyse_image(img_id, img_name, dirname)
     except Exception:
-        traceback.print_exc()
+        traceback.print_exc()'''
         

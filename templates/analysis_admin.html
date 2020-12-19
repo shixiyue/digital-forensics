@@ -31,12 +31,10 @@
         </div>
         <div class="col-md-6 col-xs-5">
             <h4>Analysis Outputs</h4>
-            <h5>Found very similar crop within in the same submission</h5>
-            <p>Similarity score: 0.99643</p>
-            <img class="img-fluid" src="{{ upload }}" />
-            <h5>Did not find suspected copy-paste modification</h5>
-            {% for output in outputs %}
-            <img class="img-fluid" src="{{ output }}" />
+            <h5>Suspected copy-paste modification is annotated in the below image if there is any</h5>
+            <img class="img-fluid" src="{{manipulation}}" />
+            <h5>ELA Analysis Result</h5>
+            <img class="img-fluid" src="{{ela}}" />
             {% endfor %}
         </div>
     </div>

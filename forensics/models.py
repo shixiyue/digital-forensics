@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractUser
 import uuid
 
-from .utils import upload_file_name, analysis_file_name, crop_file_name
+from .utils import upload_file_name, crop_file_name, analysis_file_name
 
 class WebsiteUserManager(BaseUserManager):
     def create_superuser(self, email, password):
@@ -84,6 +84,7 @@ class ImageStatus(models.IntegerChoices):
     CERTIFIED = 1
     MANIPULATED = 2
     REDO = 3
+    PROCESSED = 4
 
 class Image(models.Model):
     id = models.IntegerField(primary_key=True, editable=False)
@@ -107,9 +108,31 @@ class Crop(models.Model):
     def __str__(self):
         return '%s_%d' % (self.original_image, self.id)
 
-class AnalysisImage(models.Model):
-    crop = models.ForeignKey(Crop, on_delete=models.CASCADE)
-    image = models.FileField(upload_to=analysis_file_name)
+class AnalysisType(models.IntegerChoices):
+    MANIPULATION = 0
+    ELA = 1
 
-    def __str__(self):
-        return '%s_%d' % (self.crop, self.id)
+class AnalysisCrop(models.Model):
+    crop = models.ForeignKey(Crop, on_delete=models.CASCADE)
+    analysis_image = models.FileField(upload_to=analysis_file_name)
+    analysis_type = models.IntegerField(choices=AnalysisType.choices)
+
+class AnalysisImage(models.Model):
+    image = models.ForeignKey(Image, on_delete=models.CASCADE)
+    analysis_image = models.FileField(upload_to=analysis_file_name)
+    analysis_type = models.IntegerField(choices=AnalysisType.choices)
+
+class Similarity(models.Model):
+    crop_1 = models.ForeignKey(Crop, on_delete=models.CASCADE)
+    crop_2 = models.IntegerField()
+    score = models.FloatField()
+
+    x_1 = models.IntegerField(null=True)
+    y_1 = models.IntegerField(null=True)
+    width_1 = models.IntegerField(null=True)
+    height_1 = models.IntegerField(null=True)
+
+    x_2 = models.IntegerField(null=True)
+    y_2 = models.IntegerField(null=True)
+    width_2 = models.IntegerField(null=True)
+    height_2 = models.IntegerField(null=True)

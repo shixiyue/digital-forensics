@@ -34,7 +34,7 @@ import PIL
 
 from .forms import SignUpForm, LoginForm
 from .tokens import account_activation_token
-from .models import WebsiteUser, Image, Submission, Crop, ImageStatus
+from .models import WebsiteUser, Image, Submission, Crop, ImageStatus, AnalysisCrop, AnalysisType
 from .tables import SubmissionTable, SubmissionAdminTable
 from .serializers import ImageSerializer
 from .serializers import SubmissionSerializer
@@ -231,13 +231,11 @@ def submission_admin_view(request, id):
 def analysis_view(request, sub_id, crop_id):
     crop = Crop.objects.get(id=crop_id)
     upload = crop.image.url
-    outputs = []
-    #for output in sorted(os.listdir(PROJECT_ROOT + dirname)):
-        #outputs.append(os.path.join(dirname, output))
-    #outputs.remove(upload)
+    manipulation = AnalysisCrop.objects.get(crop=crop_id, analysis_type=AnalysisType.MANIPULATION).analysis_image.url
+    ela = AnalysisCrop.objects.get(crop=crop_id, analysis_type=AnalysisType.ELA).analysis_image.url
 
     return render(
-        request, "analysis.html", {"sub_id": sub_id, "upload": upload, "outputs": outputs}
+        request, "analysis.html", {"sub_id": sub_id, "upload": upload, "manipulation": manipulation, "ela": ela}
     )
 
 @staff_member_required
@@ -258,13 +256,10 @@ def analysis_admin_view(request, sub_id, crop_id):
 
     upload = crop.image.url
     dirname = os.path.dirname(upload)
-    outputs = []
-    #for output in sorted(os.listdir(PROJECT_ROOT + dirname)):
-        #outputs.append(os.path.join(dirname, output))
-    #outputs.remove(upload)
-
+    manipulation = AnalysisCrop.objects.get(crop=crop_id, analysis_type=AnalysisType.MANIPULATION).analysis_image.url
+    ela = AnalysisCrop.objects.get(crop=crop_id, analysis_type=AnalysisType.ELA).analysis_image.url
     return render(
-        request, "analysis_admin.html", {"sub_id": sub_id, "upload": upload, "outputs": outputs}
+        request, "analysis_admin.html", {"sub_id": sub_id, "upload": upload, "manipulation": manipulation, "ela": ela}
     )
 
 class SubmissionViewSet(viewsets.ModelViewSet):
@@ -282,7 +277,8 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             require_certificate = 0
         submission = Submission.objects.create(user=request.user, status=require_certificate)
         dirname = f"{PROJECT_ROOT}/temp/{submission.id}"
-        os.makedirs(dirname)
+        if not os.path.exists(dirname):
+            os.makedirs(dirname)
         if 'pdf' in request.data:
             upload = request.data['pdf']
             with open(dirname + "/upload.pdf", 'wb+') as f:
