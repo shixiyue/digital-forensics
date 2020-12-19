@@ -81,10 +81,10 @@ class Submission(models.Model):
 class ImageStatus(models.IntegerChoices):
     NOT_CONFIRMED = -1
     DEFAULT = 0
-    CERTIFIED = 1
-    MANIPULATED = 2
-    REDO = 3
-    PROCESSED = 4
+    PROCESSED = 1
+    CERTIFIED = 2
+    MANIPULATED = 3
+    REDO = 4
 
 class Image(models.Model):
     id = models.IntegerField(primary_key=True, editable=False)

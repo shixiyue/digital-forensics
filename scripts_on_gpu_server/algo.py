@@ -39,23 +39,20 @@ def flatten_rgba(im):
     return background
 
 
-def ela(img_id, org_fname, dirname, quality=35):
+def ela(img_name, quality=35):
     """
     Generates an ELA image on save_dir.
     Params:
-        fname:      filename w/out path
-        orig_dir:   origin path
-        save_dir:   save path
-
+        img_name:      filename w/out path
     Adapted from:
     https://gist.github.com/cirocosta/33c758ad77e6e6531392
     """
-    from .models import Crop, AnalysisCrop
+    dirname = os.path.dirname(img_name)
 
     tmp_fname = os.path.join(dirname, "tmp_ela.jpg")
-    ela_fname = os.path.join(dirname, "0-ela.png")
+    ela_fname = os.path.join(dirname, "ela.png")
 
-    im = Image.open(org_fname)
+    im = Image.open(img_name)
     if im.mode == "RGBA":
         im = flatten_rgba(im)
     im.save(tmp_fname, "JPEG", quality=quality)
@@ -72,11 +69,7 @@ def ela(img_id, org_fname, dirname, quality=35):
     ela_im = ImageEnhance.Brightness(ela_im).enhance(scale)
 
     ela_im.save(ela_fname)
-    os.remove(tmp_fname)
-    f = open(ela_fname, "rb")
-    analysis = AnalysisCrop.objects.create(crop=Crop.objects.get(id=img_id), analysis_type=1)
-    analysis.analysis_image = File(f)
-    analysis.save()
+    return ela_fname
 
 
 def apply_cmap(img, cmap=mplcm.autumn):
@@ -375,14 +368,4 @@ def find_discontinuities(
     analysis = AnalysisCrop.objects.create(crop=Crop.objects.get(id=img_id), analysis_type=1)
     analysis.analysis_image = File(f)
     analysis.save()
-
-
-@shared_task
-def check_image(img_id, img_name):
-    dirname = os.path.dirname(img_name)
-    ela(img_id, img_name, dirname, quality=35)
-    '''try:
-        analyse_image(img_id, img_name, dirname)
-    except Exception:
-        traceback.print_exc()'''
         

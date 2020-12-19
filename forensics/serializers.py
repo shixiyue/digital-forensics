@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Image, Crop, Submission
+from .models import Image, Crop, Submission, AnalysisCrop, AnalysisImage
 from .models import WebsiteUser
 
 class UserSerializer(serializers.ModelSerializer):
@@ -16,6 +16,16 @@ class ImageSerializer(serializers.ModelSerializer):
     crops = CropSerializer(many=True, read_only=True, required=False)
     class Meta:
         model = Image
+        fields = "__all__"
+
+class AnalysisCropSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AnalysisCrop
+        fields = "__all__"
+
+class AnalysisImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AnalysisImage
         fields = "__all__"
 
 class SubmissionSerializer(serializers.ModelSerializer):

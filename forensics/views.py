@@ -22,6 +22,9 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import ParseError
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 import django_tables2 as tables
 
@@ -36,8 +39,7 @@ from .forms import SignUpForm, LoginForm
 from .tokens import account_activation_token
 from .models import WebsiteUser, Image, Submission, Crop, ImageStatus, AnalysisCrop, AnalysisType
 from .tables import SubmissionTable, SubmissionAdminTable
-from .serializers import ImageSerializer
-from .serializers import SubmissionSerializer
+from .serializers import ImageSerializer, SubmissionSerializer, CropSerializer, AnalysisCropSerializer
 from .mixin import StaffRequiredMixin
 from myproject.settings import PROJECT_ROOT
 
@@ -208,9 +210,9 @@ def submission_admin_view(request, id):
     in_progress = False
     if submission.status != 0:
         for image in images:
-            if image.certified == 1:
+            if image.certified == ImageStatus.CERTIFIED:
                 num_cert += 1
-            elif image.certified == 0:
+            elif image.certified == ImageStatus.DEFAULT:
                 in_progress = True
     if request.method == "POST":
         if in_progress:
@@ -246,11 +248,11 @@ def analysis_admin_view(request, sub_id, crop_id):
         status = request.POST.get("status")
         if status:
             if status == "default":
-                crop.certified = 0
+                crop.certified = ImageStatus.DEFAULT
             elif status == "pass":
-                crop.certified = 1
+                crop.certified = ImageStatus.CERTIFIED
             else:
-                crop.certified = 2
+                crop.certified = ImageStatus.MANIPULATED
             crop.save()
             # TODO: cascade to image certified status
 
@@ -327,3 +329,37 @@ class HistoryAdminView(StaffRequiredMixin, tables.SingleTableView):
 
     def get_queryset(self):
         return Submission.objects.order_by("-id")
+
+class UnprocessedCropsView(APIView):
+    """
+    List all unprocessed crops.
+    """
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        crops = Crop.objects.filter(certified=ImageStatus.DEFAULT).order_by("id")
+        serializer = CropSerializer(crops, many=True)
+        return Response(serializer.data)
+
+class AnalysisCropView(APIView):
+    """
+    List all unprocessed crops.
+    """
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        crops = Crop.objects.filter(certified=ImageStatus.DEFAULT).order_by("id")
+        serializer = CropSerializer(crops, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = AnalysisCropSerializer(data=request.data)
+        if serializer.is_valid():
+            data = serializer.data
+            manipulation = AnalysisCrop.objects.create(crop=Crop.objects.get(id=data['crop']), analysis_type=data['analysis_type'])
+            manipulation.analysis_image = File(request.FILES['analysis_image'])
+            manipulation.save()
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

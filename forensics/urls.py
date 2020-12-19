@@ -1,6 +1,7 @@
 from django.urls import path
 from django.conf.urls import include, url
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 
 from . import views
 
@@ -37,4 +38,6 @@ urlpatterns = [
         views.analysis_admin_view,
         name="analysis_admin",
     ),
+    path('api/crops/unprocessed/', views.UnprocessedCropsView.as_view(), name="unprocessed_crops"),
+    path('api/analysis_crop/', csrf_exempt(views.AnalysisCropView.as_view()), name="analysis_crop")
 ]

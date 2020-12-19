@@ -91,8 +91,7 @@ class CroppingModel():
                 x=x0, y=y0, width=x1-x0, height=y1-y0)
             crop.image = File(f)
             crop.save()
-            # os.remove(filename)
-            run_manipulation_script(crop.id, filename)
+            os.remove(filename)
             i += 1            
     
     # Function that gets medical image boxes results in format [[type, [x0, y0, x1, y1]], ...]

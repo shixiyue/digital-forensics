@@ -11,8 +11,6 @@ from detectron2.config import get_cfg
 from detectron2.utils.visualizer import Visualizer
 from detectron2.utils.visualizer import ColorMode
 
-from django.core.files.base import File
-
 class ManipulationModel():
     def __init__(self, model_weights_location, cpu_only = True, model_type = "COCO-Detection/faster_rcnn_R_101_DC5_3x.yaml", threshold = 0.65):
         self.cfg = get_cfg()
@@ -41,8 +39,7 @@ class ManipulationModel():
         # Load metadata to match label names
         cropping_metadata = MetadataCatalog.get("meta_labels")
     
-    def visualize(self, img_id, img_name):
-        from .models import Crop, AnalysisCrop
+    def visualize(self, img_name):
         img = cv2.imread(img_name)
         # Make prediction
         outputs = self.predictor(img)
@@ -50,15 +47,12 @@ class ManipulationModel():
         v = Visualizer(img[:, :, ::-1], metadata = self.cropping_metadata, scale = 1)
         out = v.draw_instance_predictions(outputs["instances"].to("cpu"))
     
-        dirname, _ = os.path.splitext(img_name)
-        os.makedirs(dirname)
+        dirname = os.path.dirname(img_name)
         filename = f"{dirname}/manipulation.jpg"
         
         cv2.imwrite(filename, out.get_image()[:, :, ::-1])
-        f = open(filename, "rb")
-        manipulation = AnalysisCrop.objects.create(crop=Crop.objects.get(id=img_id), analysis_type=0)
-        manipulation.analysis_image = File(f)
-        manipulation.save()
+        print(len(outputs['instances'].to("cpu")))
+        return filename
     
     # Function that gets manipulated parts in image results in format [[x0, y0, x1, y1], ...]
     def medical_bounding_boxes(self, img):

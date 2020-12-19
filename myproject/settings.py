@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django_extensions",
     "django_tables2",
     "storages",
+    "rest_framework.authtoken"
 ]
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # your size limit in bytes
@@ -112,19 +113,6 @@ DATABASES = {
 import dj_database_url
 db_from_env = dj_database_url.config(conn_max_age=600)
 DATABASES['default'].update(db_from_env)
-
-"""
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "myproject", 
-        "USER": "myprojectuser", # postgres
-        "PASSWORD": "digitalforensics", # spec2020
-        "HOST": "localhost",
-        "PORT": "",
-    }
-}
-"""
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
