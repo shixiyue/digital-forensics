@@ -8,7 +8,7 @@ from manipulation import ManipulationModel
 from algo import ela
 from logmodule import LogModule
 
-logger = logmodule.LogModule()
+logger = LogModule()
 
 DIRECTORY = "temp"
 MODEL_LOCATION = "../models/manipulation_model.pth"
