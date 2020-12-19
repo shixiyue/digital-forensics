@@ -57,6 +57,7 @@ if __name__ == "__main__":
         img_name = download_image(image_url)
 
         manipulation_img = manipulation_model.visualize(img_name)
-        post_analysis_img(manipulation_img, "0")
+        if manipulation_img:
+            post_analysis_img(manipulation_img, "0")
         ela_img = ela(img_name)
         post_analysis_img(ela_img, "1")

@@ -51,6 +51,9 @@ class ManipulationModel:
         # Make prediction
         outputs = self.predictor(img)
 
+        if len(outputs["instances"].to("cpu")):
+            return None
+            
         v = Visualizer(img[:, :, ::-1], metadata=self.cropping_metadata, scale=1)
         out = v.draw_instance_predictions(outputs["instances"].to("cpu"))
 
@@ -58,7 +61,6 @@ class ManipulationModel:
         filename = f"{dirname}/manipulation.jpg"
 
         cv2.imwrite(filename, out.get_image()[:, :, ::-1])
-        print(len(outputs["instances"].to("cpu")))
         return filename
 
     # Function that gets manipulated parts in image results in format [[x0, y0, x1, y1], ...]
