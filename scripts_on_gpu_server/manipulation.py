@@ -51,9 +51,9 @@ class ManipulationModel:
         # Make prediction
         outputs = self.predictor(img)
 
-        if len(outputs["instances"].to("cpu")):
+        if len(outputs["instances"].to("cpu")) == 0:
             return None
-            
+
         v = Visualizer(img[:, :, ::-1], metadata=self.cropping_metadata, scale=1)
         out = v.draw_instance_predictions(outputs["instances"].to("cpu"))
 

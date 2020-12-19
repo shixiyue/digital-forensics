@@ -11,7 +11,7 @@ from logmodule import LogModule
 logger = LogModule()
 
 DIRECTORY = "temp"
-MODEL_LOCATION = "../models/manipulation_model.pth"
+MODEL_LOCATION = "/home/ubuntu/digital-forensics/models/manipulation_model.pth"
 get_crops_url = "http://digitalforensics.report/api/crops/unprocessed/"
 post_analysis_url = "http://digitalforensics.report:8000/api/analysis_crop/"
 
@@ -65,6 +65,8 @@ if __name__ == "__main__":
     for crop in unprocessed_crops:
         image_url = crop["image"]
         img_name = download_image(image_url)
+        if not img_name:
+            continue
 
         manipulation_img = manipulation_model.visualize(img_name)
         if manipulation_img:
