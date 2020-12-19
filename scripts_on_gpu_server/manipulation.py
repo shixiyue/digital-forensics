@@ -12,7 +12,7 @@ from detectron2.utils.visualizer import Visualizer
 from detectron2.utils.visualizer import ColorMode
 
 class ManipulationModel():
-    def __init__(self, model_weights_location, cpu_only = True, model_type = "COCO-Detection/faster_rcnn_R_101_DC5_3x.yaml", threshold = 0.65):
+    def __init__(self, model_weights_location, cpu_only = False, model_type = "COCO-Detection/faster_rcnn_R_101_DC5_3x.yaml", threshold = 0.65):
         self.cfg = get_cfg()
         
         # Load model

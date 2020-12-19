@@ -212,7 +212,7 @@ def submission_admin_view(request, id):
         for image in images:
             if image.certified == ImageStatus.CERTIFIED:
                 num_cert += 1
-            elif image.certified == ImageStatus.DEFAULT:
+            elif image.certified == ImageStatus.DEFAULT or image.certified == ImageStatus.PROCESSED:
                 in_progress = True
     if request.method == "POST":
         if in_progress:
@@ -358,8 +358,11 @@ class AnalysisCropView(APIView):
         serializer = AnalysisCropSerializer(data=request.data)
         if serializer.is_valid():
             data = serializer.data
-            manipulation = AnalysisCrop.objects.create(crop=Crop.objects.get(id=data['crop']), analysis_type=data['analysis_type'])
+            crop = Crop.objects.get(id=data['crop'])
+            manipulation = AnalysisCrop.objects.create(crop=crop, analysis_type=data['analysis_type'])
             manipulation.analysis_image = File(request.FILES['analysis_image'])
             manipulation.save()
+            crop.certified = ImageStatus.PROCESSED
+            crop.save()
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
