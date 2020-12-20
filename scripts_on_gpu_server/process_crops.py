@@ -13,7 +13,7 @@ logger = LogModule()
 DIRECTORY = "temp"
 MODEL_LOCATION = "/home/ubuntu/digital-forensics/models/manipulation_model.pth"
 get_crops_url = "http://digitalforensics.report/api/crops/unprocessed/"
-post_analysis_url = "http://digitalforensics.report:8000/api/analysis_crop/"
+post_analysis_url = "http://digitalforensics.report/api/analysis_crop/"
 
 
 def setup_session():
@@ -49,13 +49,16 @@ def download_image(url):
 
 
 def post_analysis_img(img_name, analysis_type):
-    files = {"analysis_image": ("manipulation.jpg", open(img_name, "rb"), "image/jpg")}
-    data = {"crop": crop["id"], "analysis_type": analysis_type}
-    response = session.post(post_analysis_url, files=files, data=data)
-    if response.ok:
-        logger.info("Upload analysis image, " + str(data))
-    else:
-        logger.error("Failed to upload analysis image, " + response.status_code)
+    try:
+        files = {"analysis_image": ("manipulation.jpg", open(img_name, "rb"), "image/jpg")}
+        data = {"crop": crop["id"], "analysis_type": analysis_type}
+        response = session.post(post_analysis_url, files=files, data=data)
+        if response.ok:
+            logger.info("Upload analysis image, " + str(data))
+        else:
+            logger.error("Failed to upload analysis image, " + response.status_code)
+    except Exception as e:
+        logger.error("Exception: " + str(e))
 
 
 if __name__ == "__main__":
@@ -73,4 +76,6 @@ if __name__ == "__main__":
             post_analysis_img(manipulation_img, "0")
         ela_img = ela(img_name)
         post_analysis_img(ela_img, "1")
-    shutil.rmtree(DIRECTORY)    
+    if os.path.exists(DIRECTORY):
+        shutil.rmtree(DIRECTORY)
+    os.system("sudo shutdown now -h")    

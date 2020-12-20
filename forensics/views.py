@@ -294,7 +294,13 @@ def analysis_view(request, sub_id, crop_id):
     return render(
         request,
         "analysis.html",
-        {"sub_id": sub_id, "upload": upload, "manipulation": manipulation, "ela": ela, "status": status},
+        {
+            "sub_id": sub_id,
+            "upload": upload,
+            "manipulation": manipulation,
+            "ela": ela,
+            "status": status,
+        },
     )
 
 
@@ -318,7 +324,7 @@ def analysis_admin_view(request, sub_id, crop_id):
     status = crop.certified != 0
     manipulation = AnalysisCrop.objects.filter(
         crop=crop_id, analysis_type=AnalysisType.MANIPULATION
-    ).first()    
+    ).first()
     if manipulation:
         manipulation = manipulation.analysis_image.url
     ela = AnalysisCrop.objects.filter(
@@ -329,7 +335,13 @@ def analysis_admin_view(request, sub_id, crop_id):
     return render(
         request,
         "analysis_admin.html",
-        {"sub_id": sub_id, "upload": upload, "manipulation": manipulation, "ela": ela, "status": status},
+        {
+            "sub_id": sub_id,
+            "upload": upload,
+            "manipulation": manipulation,
+            "ela": ela,
+            "status": status,
+        },
     )
 
 
